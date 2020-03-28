@@ -1,21 +1,22 @@
 #include "main.h"
 
-static THD_WORKING_AREA(waPlayer, 1024);
+static THD_WORKING_AREA(waPlayer, 256);
 static THD_FUNCTION(Player, arg) {
+  player();
   //TODO
 }
 
-static THD_WORKING_AREA(waBot, 1024);
+static THD_WORKING_AREA(waBot, 256);
 static THD_FUNCTION(Bot, arg) {
   //TODO
 }
 
-static THD_WORKING_AREA(waEngine, 2048);
+static THD_WORKING_AREA(waEngine, 4096);
 static THD_FUNCTION(Engine, arg) {
+  engine();
   //TODO
 }
 void interrupt() { 
-  digitalWrite(13, 1);
 }
 void setup() {
   init();
@@ -31,9 +32,9 @@ void setup() {
 }
 int main() {
   setup();
-  chThdCreateStatic(waPlayer, sizeof(waPlayer), NORMALPRIO + 1, Player, NULL);
-  chThdCreateStatic(waEngine, sizeof(waEngine), NORMALPRIO, Engine, NULL);
-  chThdCreateStatic(waBot, sizeof(waEngine), NORMALPRIO + 1, Bot, NULL);
+  chThdCreateStatic(waPlayer, sizeof(waPlayer), NORMALPRIO, Player, NULL);
+  chThdCreateStatic(waEngine, sizeof(waEngine), NORMALPRIO + 1, Engine, NULL);
+  chThdCreateStatic(waBot, sizeof(waEngine), NORMALPRIO, Bot, NULL);
   while(1);
   return 0;
 }
