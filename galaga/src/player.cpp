@@ -1,7 +1,6 @@
 #include "player.h"
 
-
-static THD_WORKING_AREA(waPlayer, 1024);
-static THD_FUNCTION(Player, arg) {
-    //TODO
+void player() {
+    uint8_t yVal = analogRead(JOY_VERT);
+    uint8_t xVal = analogRead(JOY_HORZ);
 }
