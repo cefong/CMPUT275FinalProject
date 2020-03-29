@@ -14,8 +14,8 @@ struct loc {
 #define JOY_CENTER      512
 #define JOY_DEADZONE    64
 
-#define JOY_VERT        A10
-#define JOY_HORZ        A8
+#define JOY_HORZ        A10
+#define JOY_VERT        A8
 #define BUTT            21
 
 #define speed           4

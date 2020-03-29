@@ -9,7 +9,6 @@
 #include "player.h"
 #include "engine.h"
 
-
 thread_t *player_thread;
 thread_t *engine_thread;
 
