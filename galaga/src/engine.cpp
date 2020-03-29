@@ -31,14 +31,12 @@ void engine() {
                 case 2:
                 break;
             }
-            tft.setTextColor(TFT_WHITE, TFT_BLACK);
-            tft.setCursor(120, 240);
-            tft.print("Play");
             thread_t *tp = chMsgWait();
-            if(tp == player_thread) {
-                chMsgSend(player_thread, (msg_t)&start);
-
+            eventmask_t butt_trig = chEvtWaitAny(ALL_EVENTS);
+            if(butt_trig && selection == 1) {
+                start = 0;
             }
+            chMsgGet(player_thread);
         }
         else {
 

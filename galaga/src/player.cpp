@@ -2,7 +2,7 @@
 extern thread_t *engine_thread;
 
 static int x = WIDTH/2;
-static int y = 8;
+static const int y = 38;
 
 
 void player_start() {
@@ -31,7 +31,7 @@ void player_game() {
         int xspeed = map(xVal, 512, 1023, 0, speed);
         x += xspeed;
     }
-    constrain(x, 0, WIDTH);
+    x = constrain(x, player_size, WIDTH - player_size);
     player.x = x;
     player.y = y;    
     chMsgSend(engine_thread, (msg_t)&player);
