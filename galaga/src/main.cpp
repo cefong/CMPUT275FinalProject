@@ -4,7 +4,6 @@ static THD_WORKING_AREA(waPlayer, 128);
 static THD_FUNCTION(Player, arg) {
   (void)arg;
   player();
-  //TODO
 }
 
 static THD_WORKING_AREA(waEngine, 4096);
@@ -18,8 +17,6 @@ static THD_FUNCTION(Engine, arg) {
   while(1) {
     engine();
   }
-  
-  //TODO
 }
 void interruptHandler() { 
   // set a flag to signal Engine Thread
