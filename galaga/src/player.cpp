@@ -2,7 +2,7 @@
 extern thread_t *engine_thread;
 
 static int x = WIDTH/2;
-static const int y = 38;
+static const int y = HEIGHT - 70;
 
 
 void player_start() {
@@ -24,17 +24,16 @@ void player_game() {
     loc player;
     int xVal = analogRead(JOY_HORZ);
     if(xVal < JOY_CENTER - JOY_DEADZONE) {
-        int xspeed = map(xVal, 512, 0, 0, speed);
-        x -= xspeed;
+        x -= 2;
     }
     else if(xVal > JOY_CENTER + JOY_DEADZONE) {
-        int xspeed = map(xVal, 512, 1023, 0, speed);
-        x += xspeed;
+        x += 2;
     }
     x = constrain(x, player_size, WIDTH - player_size);
     player.x = x;
     player.y = y;    
     chMsgSend(engine_thread, (msg_t)&player);
+    chThdSleepMilliseconds(5);
 }
 
 void player() {

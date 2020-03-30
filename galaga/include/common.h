@@ -8,6 +8,19 @@ struct loc {
     int x;
     int y;
 };
+
+struct bullet {
+    bool active = false;
+    bool player;
+    int x = 0;
+    int y = 0;
+};
+struct player_stats {
+    int health = 3;
+    int x;
+    int y;
+};
+
 #define WIDTH           320
 #define HEIGHT          480
 
@@ -19,6 +32,9 @@ struct loc {
 #define BUTT            21
 
 #define speed           4
-#define player_size     8
+#define player_size     7
+
+#define PLAY_NUM_BULLET 100
+
 
 #endif

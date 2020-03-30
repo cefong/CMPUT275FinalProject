@@ -1,14 +1,10 @@
 #include "engine.h"
-static int start = 1;
+#include "character.h"
+bullet bul[PLAY_NUM_BULLET];
+static bool start = 1;
 static int selection = 0;
 static int cur_score = 0;
-struct player_stats {
-    int health = 3;
-    int x;
-    int y;
-};
-
-void main_screen_init() {
+static void main_screen_init() {
     tft.fillScreen(TFT_BLACK);
     tft.drawLine(0, 50, WIDTH, 50, TFT_PURPLE);
     tft.drawLine(0, HEIGHT - 50, WIDTH, HEIGHT - 50, TFT_PURPLE);
@@ -23,7 +19,7 @@ void main_screen_init() {
 
 }
 
-void high_score_show() {
+static void high_score_show() {
     tft.fillScreen(TFT_BLACK);
     tft.drawLine(0, 50, WIDTH, 50, TFT_PURPLE);
     tft.drawLine(0, HEIGHT - 50, WIDTH, HEIGHT - 50, TFT_PURPLE);
@@ -37,13 +33,10 @@ void high_score_show() {
     tft.print(cur_score);
 
 }
-
-
-
 
 
 void engine() {
-    if(start == 1) {
+    if(start) {
         chMsgSend(player_thread, start);
         tft.setCursor(35, 100);
         tft.setTextSize(7);
@@ -78,7 +71,7 @@ void engine() {
         chMsgRelease(player_thread, mess);
         eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
         if(butt_trig && selection == 0) {
-            start = 0;
+            start = false;
         }
         
     }
@@ -86,13 +79,16 @@ void engine() {
         main_screen_init();
         loc *player;
         while(start == 0){
+            int x_temp = player->x;   
+            bullet_update();
             chMsgSend(player_thread, start);
             eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
-            chMsgWait();       
+            chMsgWait();
             player = (loc*)chMsgGet(player_thread);
+            player_character(player->x, player->y, x_temp, player->y);
             chMsgRelease(player_thread, (msg_t)&player);
             if(butt_trig) {
-                Serial.println("fire triggered");
+                fire_bullet(true, player->x, player->y);
             }
         }
     }
