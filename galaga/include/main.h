@@ -8,9 +8,11 @@
 #include "common.h"
 #include "player.h"
 #include "engine.h"
+#include "bot.h"
 
 thread_t *player_thread;
 thread_t *engine_thread;
+thread_t *bot_thread;
 
 MCUFRIEND_kbv tft;
 

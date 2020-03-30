@@ -1,7 +1,7 @@
 #include "engine.h"
 #include "character.h"
-bullet bul[PLAY_NUM_BULLET];
-static bool start = 1;
+
+static bool start = true;
 static int selection = 0;
 static int cur_score = 0;
 static void main_screen_init() {
@@ -78,17 +78,27 @@ void engine() {
     else {
         main_screen_init();
         loc *player;
+        loc *bot;
+        int x_temp_p, x_temp_b;
         while(start == 0){
-            int x_temp = player->x;   
-            bullet_update();
             chMsgSend(player_thread, start);
-            eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
+            chMsgSend(bot_thread, start);
+            draw_player(player->x, player->y, x_temp_p, player->y);
+            draw_bot(bot->x, bot->y, x_temp_b, bot->y);
+            x_temp_b = bot->x;
+            x_temp_p = player->x;   
+            bullet_update();
             chMsgWait();
             player = (loc*)chMsgGet(player_thread);
-            player_character(player->x, player->y, x_temp, player->y);
             chMsgRelease(player_thread, (msg_t)&player);
-            if(butt_trig) {
+            chMsgWait();
+            bot = (loc*)chMsgGet(bot_thread);
+            chMsgRelease(bot_thread, (msg_t)&bot);
+            if(player->is_fire) {
                 fire_bullet(true, player->x, player->y);
+            }
+            if(bot->is_fire) {
+                fire_bullet(false, bot->x, bot->y);
             }
         }
     }

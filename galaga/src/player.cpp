@@ -4,7 +4,7 @@ extern thread_t *engine_thread;
 static int x = WIDTH/2;
 static const int y = HEIGHT - 70;
 
-
+static eventmask_t butt_trig;
 void player_start() {
     msg_t stat = 0;
     int yVal = analogRead(JOY_VERT);
@@ -21,8 +21,11 @@ void player_start() {
 }
 
 void player_game() {
+    butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
     loc player;
+    player.is_fire = false;
     int xVal = analogRead(JOY_HORZ);
+    
     if(xVal < JOY_CENTER - JOY_DEADZONE) {
         x -= 2;
     }
@@ -31,9 +34,12 @@ void player_game() {
     }
     x = constrain(x, player_size, WIDTH - player_size);
     player.x = x;
-    player.y = y;    
+    player.y = y;
+    if(butt_trig) {
+        player.is_fire = true;
+    }    
     chMsgSend(engine_thread, (msg_t)&player);
-    chThdSleepMilliseconds(5);
+    
 }
 
 void player() {
@@ -41,6 +47,7 @@ void player() {
         chMsgWait();
         msg_t sig = chMsgGet(engine_thread);
         chMsgRelease(engine_thread, sig);
+        
         if(sig == 1) {
             player_start();
         }

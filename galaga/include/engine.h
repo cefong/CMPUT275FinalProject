@@ -8,6 +8,8 @@
 
 extern thread_t *engine_thread;
 extern thread_t *player_thread;
+extern thread_t *bot_thread;
+
 
 extern MCUFRIEND_kbv tft;
 void engine();
