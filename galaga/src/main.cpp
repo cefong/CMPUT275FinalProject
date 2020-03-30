@@ -10,11 +10,18 @@ static THD_FUNCTION(Player, arg) {
 static THD_WORKING_AREA(waEngine, 4096);
 static THD_FUNCTION(Engine, arg) {
   (void)arg;
-  engine();
+  uint16_t ID = tft.readID();
+  if(ID == 0xD3D3) ID = 0x9481;
+  tft.begin(ID);
+  tft.setRotation(0);
+  tft.fillScreen(TFT_BLACK);
+  while(1) {
+    engine();
+  }
+  
   //TODO
 }
 void interruptHandler() { 
-  
   // set a flag to signal Engine Thread
   CH_IRQ_PROLOGUE();
   chSysLockFromISR();
@@ -36,11 +43,6 @@ void setup() {
   pinMode(BUTT, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BUTT), interruptHandler, FALLING);
   pinMode(13, OUTPUT);
-  uint16_t ID = tft.readID();
-  if(ID == 0xD3D3) ID = 0x9481;
-  tft.begin(ID);
-  tft.setRotation(0);
-  tft.fillScreen(TFT_BLACK);
   chBegin(chSetup);
   while(1);
 }

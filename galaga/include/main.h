@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <Adafruit_GFX.h>
-#include <MCUFRIEND_kbv.h>
+#include "MCUFRIEND_kbv.h"
 #include <SPI.h>
 #include "common.h"
 #include "player.h"
