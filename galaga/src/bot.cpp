@@ -1,6 +1,6 @@
 #include "bot.h"
 static int is_left = 0;
-static loc bot_loc;
+static alien bot_loc;
 systime_t timestamp_start, timestamp_end;
 void bot() {
     bot_loc.x = WIDTH/2;
@@ -13,6 +13,7 @@ void bot() {
         if(!stat) {
             timestamp_end = chVTGetSystemTime();
             if(timestamp_end - timestamp_start >= TIME_MS2I(2000)) {
+                // fire bullet every 2 seconds
                 bot_loc.is_fire = true;
                 timestamp_start = chVTGetSystemTime();
             }

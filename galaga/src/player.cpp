@@ -22,7 +22,7 @@ void player_start() {
 
 void player_game() {
     butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
-    loc player;
+    player_stats player;
     player.is_fire = false;
     int xVal = analogRead(JOY_HORZ);
     

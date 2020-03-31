@@ -73,12 +73,10 @@ void engine() {
         if(butt_trig && selection == 0) {
             start = false;
         }
-        
-    }
-    else {
+    } else {
         main_screen_init();
-        loc *player;
-        loc *bot;
+        player_stats *player;
+        alien *bot;
         int x_temp_p, x_temp_b;
         while(start == 0){
             chMsgSend(player_thread, start);
@@ -89,10 +87,10 @@ void engine() {
             x_temp_p = player->x;   
             bullet_update();
             chMsgWait();
-            player = (loc*)chMsgGet(player_thread);
+            player = (player_stats*)chMsgGet(player_thread);
             chMsgRelease(player_thread, (msg_t)&player);
             chMsgWait();
-            bot = (loc*)chMsgGet(bot_thread);
+            bot = (alien*)chMsgGet(bot_thread);
             chMsgRelease(bot_thread, (msg_t)&bot);
             if(player->is_fire) {
                 fire_bullet(true, player->x, player->y);
