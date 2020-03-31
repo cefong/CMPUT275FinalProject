@@ -6,13 +6,13 @@ static THD_FUNCTION(Player, arg) {
   player();
 }
 
-static THD_WORKING_AREA(waBot, 128);
+static THD_WORKING_AREA(waBot, 1024);
 static THD_FUNCTION(Bot, arg) {
   (void)arg;
   bot();
 }
 
-static THD_WORKING_AREA(waEngine, 4096);
+static THD_WORKING_AREA(waEngine, 2048);
 static THD_FUNCTION(Engine, arg) {
   (void)arg;
   uint16_t ID = tft.readID();

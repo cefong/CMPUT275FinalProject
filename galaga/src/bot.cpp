@@ -1,7 +1,7 @@
 #include "bot.h"
 static int is_left = 0;
 static loc bot_loc;
-int timestamp_start, timestamp_end;
+systime_t timestamp_start, timestamp_end;
 void bot() {
     bot_loc.x = WIDTH/2;
     bot_loc.y = 70;

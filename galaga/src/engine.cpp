@@ -6,8 +6,8 @@ static int selection = 0;
 static int cur_score = 0;
 static void main_screen_init() {
     tft.fillScreen(TFT_BLACK);
-    tft.drawLine(0, 50, WIDTH, 50, TFT_PURPLE);
-    tft.drawLine(0, HEIGHT - 50, WIDTH, HEIGHT - 50, TFT_PURPLE);
+    tft.fillRect(0, 50, WIDTH, 5, TFT_PURPLE);
+    tft.fillRect(0, HEIGHT - 50, WIDTH, 5, TFT_PURPLE);
     tft.setCursor(10, 10);
     tft.setTextSize(2);
     tft.print("HIGH SCORE");
@@ -49,7 +49,7 @@ void engine() {
             tft.setCursor(110, 200);
             tft.print("PLAY");
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
-            tft.setCursor(80, 240);
+            tft.setCursor(65, 240);
             tft.print("HIGH SCORE");
             break;
             case 1:
@@ -57,7 +57,7 @@ void engine() {
             tft.setCursor(110, 200);
             tft.print("PLAY");
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
-            tft.setCursor(80, 240);
+            tft.setCursor(65, 240);
             tft.print("HIGH SCORE");
             break;
             case 2:
