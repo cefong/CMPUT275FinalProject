@@ -4,7 +4,7 @@ static alien bot_loc;
 systime_t timestamp_start, timestamp_end;
 void bot() {
     bot_loc.x = WIDTH/2;
-    bot_loc.y = 70;
+    bot_loc.y = 80;
     timestamp_start = chVTGetSystemTime();
     while(1) {
         chMsgWait();

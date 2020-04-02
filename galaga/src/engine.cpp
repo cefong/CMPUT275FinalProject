@@ -73,7 +73,8 @@ void engine() {
         if(butt_trig && selection == 0) {
             start = false;
         }
-    } else {
+    } 
+    else {
         main_screen_init();
         player_stats *player;
         alien *bot;
@@ -81,8 +82,8 @@ void engine() {
         while(start == 0){
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
-            draw_player(player->x, player->y, x_temp_p, player->y);
-            draw_bot(bot->x, bot->y, x_temp_b, bot->y);
+            drawSpaceship(player->x, player->y, x_temp_p, player->y, 3, true);
+            drawSpaceship(bot->x, bot->y, x_temp_b, bot->y, 3, false);
             x_temp_b = bot->x;
             x_temp_p = player->x;   
             bullet_update();

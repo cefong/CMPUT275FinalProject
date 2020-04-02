@@ -2,7 +2,7 @@
 extern thread_t *engine_thread;
 
 static int x = WIDTH/2;
-static const int y = HEIGHT - 70;
+static const int y = HEIGHT - 80;
 
 static eventmask_t butt_trig;
 void player_start() {
