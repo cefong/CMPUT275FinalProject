@@ -22,23 +22,104 @@ static void draw_bullet(bool is_player, int x, int y) {
 
 
 }
+void drawSpaceship(int16_t anchorX, int16_t anchorY, int16_t x_pos, int16_t y_pos, int16_t scale, bool is_player) {
+	int16_t color1, color2, color3, color4, color5, color6, color7;
+	if (is_player) {
+		color1 = COLOR_1_PLAYER;
+		color2 = COLOR_2_PLAYER;
+		color3 = COLOR_3_PLAYER;
+		color4 = COLOR_4_PLAYER;
+		color5 = COLOR_5_PLAYER;
+		color6 = COLOR_6_PLAYER;
+		color7 = COLOR_7_PLAYER;
+	} 
+    else {
+		color1 = COLOR_1_ENEMY;
+		color2 = COLOR_2_ENEMY;
+		color3 = COLOR_3_ENEMY;
+		color4 = COLOR_4_ENEMY;
+		color5 = COLOR_5_ENEMY;
+		color6 = COLOR_6_ENEMY;
+		color7 = COLOR_7_ENEMY;
+	}
+    tft.fillCircle(x_pos, y_pos, bot_size*scale, TFT_BLACK);
+	// code for color 1
+	tft.fillRect(anchorX, anchorY-4*scale, scale, scale, color1);
+	tft.fillRect(anchorX, anchorY+6*scale, scale, scale, color1);
+	tft.fillRect(anchorX-1*scale, anchorY+5*scale, scale, scale, color1);
+	tft.fillRect(anchorX+1*scale, anchorY+5*scale, scale, scale, color1);
+	tft.fillRect(anchorX+3*scale, anchorY+4*scale, scale, scale, color1);
+	tft.fillRect(anchorX-3*scale, anchorY+4*scale, scale, scale, color1);
 
+	// code for color 2
+	tft.fillRect(anchorX, anchorY+5*scale, scale, scale, color2);
+	tft.fillRect(anchorX+1*scale, anchorY+4*scale, scale, scale, color2);
+	tft.fillRect(anchorX-1*scale, anchorY+4*scale, scale, scale, color2);
 
-void draw_bot(int x, int y, int x_pos, int y_pos) {
-    // draw alien: xy are new pos, x_pos/y_pos are old
-    // draw black circle at old position
-    tft.fillCircle(x_pos, y_pos, bot_size, TFT_BLACK);
-    // draw blue circle at new position
-    tft.fillCircle(x, y, bot_size, BOT_COLOR);
+	// code for color 3
+	tft.fillRect(anchorX-3*scale, anchorY+5*scale, scale, scale, color3);
+	tft.fillRect(anchorX+3*scale, anchorY+5*scale, scale, scale, color3);
+	tft.fillRect(anchorX, anchorY+4*scale, scale, scale, color3);
+
+	// code for color 4
+	tft.fillRect(anchorX-6*scale, anchorY-3*scale, scale, 3*scale, color4);
+	tft.fillRect(anchorX-5*scale, anchorY, scale, 2*scale, color4);
+	tft.fillRect(anchorX-5*scale, anchorY-4*scale, scale, scale, color4);
+	tft.fillRect(anchorX-4*scale, anchorY+2*scale, scale, scale, color4);
+	tft.fillRect(anchorX-4*scale, anchorY-5*scale, scale, scale, color4);
+	tft.fillRect(anchorX-3*scale, anchorY+3*scale, scale, scale, color4);
+	tft.fillRect(anchorX-3*scale, anchorY-6*scale, scale, 4*scale, color4);
+	tft.fillRect(anchorX-2*scale, anchorY+2*scale, scale, scale, color4);
+	tft.fillRect(anchorX-2*scale, anchorY-2*scale, scale, scale, color4);
+	tft.fillRect(anchorX-scale, anchorY+2*scale, scale, 2*scale, color4);
+	tft.fillRect(anchorX-scale, anchorY-scale, scale, scale, color4);
+	tft.fillRect(anchorX, anchorY+3*scale, scale, scale, color4);
+	tft.fillRect(anchorX, anchorY-3*scale, scale, 2*scale, color4);
+	tft.fillRect(anchorX+6*scale, anchorY-3*scale, scale, 3*scale, color4);
+	tft.fillRect(anchorX+5*scale, anchorY, scale, 2*scale, color4);
+	tft.fillRect(anchorX+5*scale, anchorY-4*scale, scale, scale, color4);
+	tft.fillRect(anchorX+4*scale, anchorY+2*scale, scale, scale, color4);
+	tft.fillRect(anchorX+4*scale, anchorY-5*scale, scale, scale, color4);
+	tft.fillRect(anchorX+3*scale, anchorY+3*scale, scale, scale, color4);
+	tft.fillRect(anchorX+3*scale, anchorY-6*scale, scale, 4*scale, color4);
+	tft.fillRect(anchorX+2*scale, anchorY+2*scale, scale, scale, color4);
+	tft.fillRect(anchorX+2*scale, anchorY-2*scale, scale, scale, color4);
+	tft.fillRect(anchorX+scale, anchorY+2*scale, scale, 2*scale, color4);
+	tft.fillRect(anchorX+scale, anchorY-scale, scale, scale, color4);
+
+	// code for color 5
+	tft.fillRect(anchorX-5*scale, anchorY-3*scale, scale, 3*scale, color5);
+	tft.fillRect(anchorX-4*scale, anchorY, scale, 2*scale, color5);
+	tft.fillRect(anchorX-4*scale, anchorY-4*scale, scale, 2*scale, color5);
+	tft.fillRect(anchorX-3*scale, anchorY-2*scale, scale, 5*scale, color5);
+	tft.fillRect(anchorX-2*scale, anchorY-scale, scale, 2*scale, color5);
+	tft.fillRect(anchorX+5*scale, anchorY-3*scale, scale, 3*scale, color5);
+	tft.fillRect(anchorX+4*scale, anchorY, scale, 2*scale, color5);
+	tft.fillRect(anchorX+4*scale, anchorY-4*scale, scale, 2*scale, color5);
+	tft.fillRect(anchorX+3*scale, anchorY-2*scale, scale, 5*scale, color5);
+	tft.fillRect(anchorX+2*scale, anchorY-scale, scale, 2*scale, color5);
+
+	// code for color 6
+	tft.fillRect(anchorX-4*scale, anchorY-2*scale, scale, 2*scale, color6);
+	tft.fillRect(anchorX-2*scale, anchorY+scale, scale, scale, color6);
+	tft.fillRect(anchorX+4*scale, anchorY-2*scale, scale, 2*scale, color6);
+	tft.fillRect(anchorX+2*scale, anchorY+scale, scale, scale, color6);	
+
+	// code for color 7
+	tft.fillRect(anchorX-scale, anchorY, scale, 2*scale, color7);
+	tft.fillRect(anchorX, anchorY-scale, scale, 4*scale, color7);
+	tft.fillRect(anchorX+scale, anchorY, scale, 2*scale, color7);
 }
 
-void draw_player(int x, int y, int x_pos, int y_pos) {
-    // draw player: xy are new pos, x_pos/y_pos are old
-    // draw black circle at old position
-    tft.fillCircle(x_pos, y_pos, player_size, TFT_BLACK);
-    // draw red circle at new position
-    tft.fillCircle(x, y, player_size, PLAYER_COLOR);
-}
+// void draw_bot(int x, int y, int x_pos, int y_pos) {
+//     tft.fillCircle(x_pos, y_pos, bot_size, TFT_BLACK);
+//     tft.fillCircle(x, y, bot_size, BOT_COLOR);
+// }
+
+// void draw_player(int x, int y, int x_pos, int y_pos) {
+//     tft.fillCircle(x_pos, y_pos, player_size, TFT_BLACK);
+//     tft.fillCircle(x, y, player_size, PLAYER_COLOR);
+// }
 
 void fire_bullet(bool is_player, int x, int y) {
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {

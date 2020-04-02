@@ -77,9 +77,7 @@ void engine() {
             // if button is pressed and selected PLAY
             start = false;
         }
-    } else {
-        // we selected PLAY
-        // redraw basic screen
+    else {
         main_screen_init();
         // initialize player and bot
         player_stats *player;
@@ -92,10 +90,8 @@ void engine() {
         while(start == 0){
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
-            // draw player and bot at new locations
-            draw_player(player->x, player->y, x_temp_p, player->y);
-            draw_bot(bot->x, bot->y, x_temp_b, y_temp_b);
-            // update temp location as current location
+            drawSpaceship(player->x, player->y, x_temp_p, player->y, 3, true);
+            drawSpaceship(bot->x, bot->y, x_temp_b, bot->y, 3, false);
             x_temp_b = bot->x;
             x_temp_p = player->x;
             y_temp_b = bot->y;
