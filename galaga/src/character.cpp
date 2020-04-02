@@ -1,15 +1,17 @@
 #include "character.h"
 
+// define array of bullet structs (size is number allowed on screen at once)
 static bullet ammo[PLAY_NUM_BULLET];
 
 static void draw_bullet(bool is_player, int x, int y) {
-    // draws a bullet starting from top or bottom depending on character type
-    
+    /*
+	Draws a bullet starting from top or bottom depending on character type.
+    */
     if(is_player) {
         // if player, start from bottom
         // draw a bullet at current x and y position
         tft.fillRoundRect(x, y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, BULLET_COLOR_P);
-        // draw black circle at old location
+        // draw black rectangle at old location
         tft.fillRoundRect(x, y + BULLET_HEIGHT, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, TFT_BLACK);
     }
     else {
@@ -23,8 +25,13 @@ static void draw_bullet(bool is_player, int x, int y) {
 
 }
 void drawSpaceship(int16_t anchorX, int16_t anchorY, int16_t x_pos, int16_t y_pos, int16_t scale, bool is_player) {
+	/*
+	Draws the spaceships at player and bot locations
+	*/
+	
 	int16_t color1, color2, color3, color4, color5, color6, color7;
-    
+	
+	// change colour of ship based on character type
 	if (is_player) {
         tft.fillCircle(x_pos, y_pos, size*scale, TFT_BLACK);
 		color1 = COLOR_1_PLAYER;
@@ -126,7 +133,11 @@ void drawSpaceship(int16_t anchorX, int16_t anchorY, int16_t x_pos, int16_t y_po
 // }
 
 void fire_bullet(bool is_player, int x, int y) {
+	/*
+	Fire bullet from player or bot
+	*/
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {
+		// allows us to have multiple bullets going at once
         if(!ammo[i].active) {
             ammo[i].active = true;
             ammo[i].player = is_player;
@@ -138,15 +149,22 @@ void fire_bullet(bool is_player, int x, int y) {
         }
     }
 }
+
 void bullet_update() {
+	/*
+	Update bullet position for all active bullets
+	*/
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {
         if(ammo[i].active) {
+			// redraw each active bullet
             draw_bullet(ammo[i].player, ammo[i].x, ammo[i].y);
             if(ammo[i].y < 50 + 2*BULLET_HEIGHT || ammo[i].y > HEIGHT - 50 - 2*BULLET_HEIGHT) {
-                tft.fillRoundRect(ammo[i].x, ammo[i].y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, TFT_BLACK);
+				// when bullets hit the edge of screen they are deactivated
+				tft.fillRoundRect(ammo[i].x, ammo[i].y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, TFT_BLACK);
                 ammo[i].active = false;
             }
             else {
+				// increment bullet y position based on character type
                 if(ammo[i].player) {
                     ammo[i].y -= BULLET_HEIGHT;
                 }
