@@ -50,6 +50,7 @@ void setup() {
   Serial.begin(9600);
   // put your setup code here, to run once
   pinMode(BUTT, INPUT_PULLUP);
+  // setting up interrupt pin 21
   attachInterrupt(digitalPinToInterrupt(BUTT), interruptHandler, FALLING);
   pinMode(13, OUTPUT);
   chBegin(chSetup);

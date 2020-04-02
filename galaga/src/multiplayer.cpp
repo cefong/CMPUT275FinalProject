@@ -6,7 +6,7 @@ const uint16_t buf_size = 256;
 String buffer = "";
 uint16_t buff_len = 0;
 bool wait_timeout(uint8_t nbytes, long timeout) {
-	unsigned long deadline = millis() + timeout;// wraparound  not a problem
+	unsigned long deadline = TIME_I2MS(chVTGetSystemTime()) + timeout;// wraparound  not a problem
 	while (Serial.available() < nbytes && (timeout < 0 ||  millis() < deadline)){
 		chThdSleepMilliseconds(1); // be nice , no busy  loop
 	}
