@@ -3,6 +3,8 @@
 #include "multiplayer.h"
 static int start = 1;
 static int selection = 0;
+static int lives_select = 0;
+static int player_lives;
 static int cur_score = 0;
 static player_stats *player1;
 static player_stats *player2;  
@@ -106,6 +108,47 @@ void show_selection() {
     }
 }
 
+// lives selection for single player
+void show_lives_selection() {
+    tft.fillScreen(TFT_BLACK);
+    switch(lives_select){
+        // toggle between lives selection
+        case 0:
+        tft.setTextColor(TFT_BLACK, TFT_WHITE);
+        tft.setCursor(110, 200);
+        tft.print("ROOKIE");
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(50, 240);
+        tft.print("INTERMEDIATE");
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(100, 280);
+        tft.print("ADVANCED");
+        break;
+        case 1:
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(110, 200);
+        tft.print("ROOKIE");
+        tft.setTextColor(TFT_BLACK, TFT_WHITE);
+        tft.setCursor(50, 240);
+        tft.print("INTERMEDIATE");
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(100, 280);
+        tft.print("ADVANCED");
+        break;
+        case 2:
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(110, 200);
+        tft.print("ROOKIE");
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(50, 240);
+        tft.print("INTERMEDIATE");
+        tft.setTextColor(TFT_BLACK, TFT_WHITE);
+        tft.setCursor(100, 280);
+        tft.print("ADVANCED");
+        break;
+    }
+}
+
 void engine() {
     if(start == 1) {
         // if we are just starting, display main screen
@@ -132,12 +175,35 @@ void engine() {
         }
     }
     else if(start == 0) {
+        /* i messed something up here lol minh help
+        show_lives_selection();
+        chMsgWait();
+        msg_t mess = chMsgGet(player_thread);
+        lives_select -= mess;
+        if(lives_select > 2) lives_select = 0;
+        else if(lives_select < 0) lives_select = 2;
+        chMsgRelease(player_thread, mess);
+        eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
+        if(butt_trig && lives_select == 0) {
+            // if button is pressed and selected beginner
+            player_lives = 5;
+        }
+        else if(butt_trig && lives_select == 1) {
+            // if button is pressed and selected intermediate
+            player_lives = 3;
+        }
+        else if (butt_trig && lives_select == 2) {
+            // if button is pressed and selected advanced
+            player_lives = 1;
+        }
+        */
         main_screen_init();
         // initialize player and bot
         player_stats *player;
         alien *bot;
         player->x = WIDTH/2;
         player->y = HEIGHT-70;
+        player->lives = player_lives;
         bot->x = WIDTH/2;
         bot->y = 70;
         int x_temp_p, x_temp_b, y_temp_b;
