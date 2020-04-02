@@ -11,6 +11,7 @@ void bot() {
     int time_delay_jump = 5000;
     timestamp_start_b = chVTGetSystemTime();
     timestamp_start_j = chVTGetSystemTime();
+    bot_loc.lives = 1;
     while(1) {
         chMsgWait();
         msg_t stat = chMsgGet(engine_thread);
