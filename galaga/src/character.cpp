@@ -3,13 +3,20 @@
 static bullet ammo[PLAY_NUM_BULLET];
 
 static void draw_bullet(bool is_player, int x, int y) {
+    // draws a bullet starting from top or bottom depending on character type
     
     if(is_player) {
+        // if player, start from bottom
+        // draw a bullet at current x and y position
         tft.fillRoundRect(x, y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, BULLET_COLOR_P);
+        // draw black circle at old location
         tft.fillRoundRect(x, y + BULLET_HEIGHT, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, TFT_BLACK);
     }
     else {
+        // if alien, start at top
+        // draw bullet at current x and y pos 
         tft.fillRoundRect(x, y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, BULLET_COLOR_B);
+        // draw black circle at old location
         tft.fillRoundRect(x, y - BULLET_HEIGHT, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, TFT_BLACK);
     }
 
@@ -113,7 +120,6 @@ void drawSpaceship(int16_t anchorX, int16_t anchorY, int16_t x_pos, int16_t y_po
 //     tft.fillCircle(x_pos, y_pos, player_size, TFT_BLACK);
 //     tft.fillCircle(x, y, player_size, PLAYER_COLOR);
 // }
-
 
 void fire_bullet(bool is_player, int x, int y) {
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {

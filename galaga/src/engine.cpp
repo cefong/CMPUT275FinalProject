@@ -5,6 +5,7 @@ static bool start = true;
 static int selection = 0;
 static int cur_score = 0;
 static void main_screen_init() {
+    // initialize basic screen
     tft.fillScreen(TFT_BLACK);
     tft.fillRect(0, 50, WIDTH, 5, TFT_PURPLE);
     tft.fillRect(0, HEIGHT - 50, WIDTH, 5, TFT_PURPLE);
@@ -37,6 +38,7 @@ static void high_score_show() {
 
 void engine() {
     if(start) {
+        // if we are just starting, display main screen
         chMsgSend(player_thread, start);
         tft.setCursor(35, 100);
         tft.setTextSize(7);
@@ -44,6 +46,7 @@ void engine() {
         tft.print("GALAGA");
         tft.setTextSize(3);
         switch(selection){
+            // toggle between PLAY and HIGH SCORE options
             case 0:
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
             tft.setCursor(110, 200);
@@ -71,32 +74,43 @@ void engine() {
         chMsgRelease(player_thread, mess);
         eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
         if(butt_trig && selection == 0) {
+            // if button is pressed and selected PLAY
             start = false;
         }
-    } 
     else {
         main_screen_init();
+        // initialize player and bot
         player_stats *player;
         alien *bot;
-        int x_temp_p, x_temp_b;
+        player->x = WIDTH/2;
+        player->y = HEIGHT-70;
+        bot->x = WIDTH/2;
+        bot->y = 70;
+        int x_temp_p, x_temp_b, y_temp_b;
         while(start == 0){
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
             drawSpaceship(player->x, player->y, x_temp_p, player->y, 3, true);
             drawSpaceship(bot->x, bot->y, x_temp_b, bot->y, 3, false);
             x_temp_b = bot->x;
-            x_temp_p = player->x;   
+            x_temp_p = player->x;
+            y_temp_b = bot->y;
+            // handle bullets
             bullet_update();
             chMsgWait();
+            // update player
             player = (player_stats*)chMsgGet(player_thread);
             chMsgRelease(player_thread, (msg_t)&player);
             chMsgWait();
+            // update bot
             bot = (alien*)chMsgGet(bot_thread);
             chMsgRelease(bot_thread, (msg_t)&bot);
             if(player->is_fire) {
+                // if player is firing, fire a bullet from player position
                 fire_bullet(true, player->x, player->y);
             }
             if(bot->is_fire) {
+                // if bot is firing, fire a bullet from alien position
                 fire_bullet(false, bot->x, bot->y);
             }
         }
