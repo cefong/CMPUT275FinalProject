@@ -1,5 +1,7 @@
 #include "engine.h"
 #include "character.h"
+extern bullet ammo[PLAY_NUM_BULLET];
+static bool start = true;
 #include "multiplayer.h"
 static int start = 1;
 static int selection = 0;
@@ -141,6 +143,7 @@ void engine() {
         bot->x = WIDTH/2;
         bot->y = 70;
         int x_temp_p, x_temp_b, y_temp_b;
+        bool firstRun = 1;
         while(start == 0){
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
@@ -150,7 +153,11 @@ void engine() {
             x_temp_p = player->x;
             y_temp_b = bot->y;
             // handle bullets
-            bullet_update();
+            
+            bullet_update(bot,player);
+           
+            
+            
             chMsgWait();
             // update player
             player = (player_stats*)chMsgGet(player_thread);
