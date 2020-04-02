@@ -77,6 +77,7 @@ void engine() {
             // if button is pressed and selected PLAY
             start = false;
         }
+    }
     else {
         main_screen_init();
         // initialize player and bot
@@ -91,7 +92,7 @@ void engine() {
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
             drawSpaceship(player->x, player->y, x_temp_p, player->y, 3, true);
-            drawSpaceship(bot->x, bot->y, x_temp_b, bot->y, 3, false);
+            drawSpaceship(bot->x, bot->y, x_temp_b, y_temp_b, 3, false);
             x_temp_b = bot->x;
             x_temp_p = player->x;
             y_temp_b = bot->y;

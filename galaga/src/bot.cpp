@@ -4,7 +4,7 @@ static alien bot_loc;
 systime_t timestamp_start_b, timestamp_end_b, timestamp_start_j, timestamp_end_j;
 void bot() {
     bot_loc.x = WIDTH/2;
-    bot_loc.y = 70;
+    bot_loc.y = 80;
     int time_delay_bullet = 2000;
     int time_delay_jump = 5000;
     timestamp_start_b = chVTGetSystemTime();
@@ -41,16 +41,16 @@ void bot() {
             }
             
             // constrain x position of bot
-            bot_loc.x = constrain(bot_loc.x, bot_size, WIDTH - bot_size);
-            if(bot_loc.x <= bot_size && !is_left) {
+            bot_loc.x = constrain(bot_loc.x, bot_size*3, WIDTH - bot_size*3);
+            if(bot_loc.x <= bot_size*3 && !is_left) {
                 is_left = 1;
             }
-            else if(bot_loc.x >= WIDTH - bot_size && is_left) {
+            else if(bot_loc.x >= WIDTH - bot_size*3 && is_left) {
                 is_left = 0;
             }
             // constrain y position of bot
             if (bot_loc.y >= HEIGHT - 95) {
-                bot_loc.y = 70;
+                bot_loc.y = 80;
             }
             // send new bot info to engine
             chMsgSend(engine_thread, (msg_t)&bot_loc);
