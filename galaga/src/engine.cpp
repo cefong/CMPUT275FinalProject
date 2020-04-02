@@ -56,6 +56,7 @@ static bool multiplayer_init() {
     if(wait_timeout(1,500)) {
         char r = Serial.read();
         if(r == 'A') {
+            Serial.println("A");
             return 1;
         }
         else {
