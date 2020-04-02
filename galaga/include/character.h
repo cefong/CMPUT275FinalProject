@@ -47,7 +47,7 @@ struct bullet {
 extern MCUFRIEND_kbv tft;
 
 void fire_bullet(bool is_player, int x, int y);
-void bullet_update();
+void bullet_update(alien *bot, player_stats *player);
 void drawSpaceship(int16_t anchorX, int16_t anchorY, int16_t x_pos, int16_t y_pos, int16_t scale, bool is_player);
 
 
