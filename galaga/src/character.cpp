@@ -1,7 +1,6 @@
 #include "character.h"
 
 // define array of bullet structs (size is number allowed on screen at once)
-static bullet ammo[PLAY_NUM_BULLET];
 bullet ammo[PLAY_NUM_BULLET];
 
 static void draw_bullet(bool is_player, int x, int y) {
@@ -151,10 +150,6 @@ void fire_bullet(bool is_player, int x, int y) {
     }
 }
 
-void bullet_update() {
-	/*
-	Update bullet position for all active bullets
-	*/
 void drawExplosion(int x, int y, int radius, uint16_t colorBull){
     tft.drawCircle(x,y , radius, colorBull);
     tft.fillCircle(x,y , radius, colorBull);
@@ -164,15 +159,12 @@ void drawExplosion(int x, int y, int radius, uint16_t colorBull){
 void bullet_update(alien *bot, player_stats *player) {
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {
         if(ammo[i].active) {
-			// redraw each active bullet
             draw_bullet(ammo[i].player, ammo[i].x, ammo[i].y);
             if(ammo[i].y < 50 + 2*BULLET_HEIGHT || ammo[i].y > HEIGHT - 50 - 2*BULLET_HEIGHT) {
-				// when bullets hit the edge of screen they are deactivated
-				tft.fillRoundRect(ammo[i].x, ammo[i].y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, TFT_BLACK);
+                tft.fillRoundRect(ammo[i].x, ammo[i].y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, TFT_BLACK);
                 ammo[i].active = false;
             }
             else {
-				// increment bullet y position based on character type
                 if(ammo[i].player) {
                     ammo[i].y -= BULLET_HEIGHT;
                     tft.setTextColor(TFT_RED);

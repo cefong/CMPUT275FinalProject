@@ -1,9 +1,7 @@
 #include "engine.h"
 #include "character.h"
-extern bullet ammo[PLAY_NUM_BULLET];
-static bool start = true;
 #include "multiplayer.h"
-
+extern bullet ammo[PLAY_NUM_BULLET];
 // define structs and initial variables
 static int start = 1;
 static int selection = 0;
@@ -174,8 +172,7 @@ void engine() {
             x_temp_b = bot->x;
             x_temp_p = player->x;
             y_temp_b = bot->y;
-            // handle bullets
-            bullet_update();            
+            // handle bullets      
             bullet_update(bot,player);
             chMsgWait();
             // update player
@@ -226,7 +223,7 @@ void engine() {
             drawSpaceship(player1->x, player1->y, x_temp_1, player1->y, SCALE, true);
             drawSpaceship(player2->x, player2->y, x_temp_2, player2->y, SCALE, false);
             // handle bullets
-            bullet_update();
+            //bullet_update(player1,player2);
             // update player positions
             x_temp_2 = player2->x;
             x_temp_1 = player1->x;
