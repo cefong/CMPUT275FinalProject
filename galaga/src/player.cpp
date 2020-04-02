@@ -32,7 +32,7 @@ void player_game() {
     else if(xVal > JOY_CENTER + JOY_DEADZONE) {
         x += 2;
     }
-    x = constrain(x, player_size, WIDTH - player_size);
+    x = constrain(x, size*SCALE, WIDTH - size*SCALE);
     player.x = x;
     player.y = y;
     if(butt_trig) {

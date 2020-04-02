@@ -24,7 +24,9 @@ static void draw_bullet(bool is_player, int x, int y) {
 }
 void drawSpaceship(int16_t anchorX, int16_t anchorY, int16_t x_pos, int16_t y_pos, int16_t scale, bool is_player) {
 	int16_t color1, color2, color3, color4, color5, color6, color7;
+    
 	if (is_player) {
+        tft.fillCircle(x_pos, y_pos, size*scale, TFT_BLACK);
 		color1 = COLOR_1_PLAYER;
 		color2 = COLOR_2_PLAYER;
 		color3 = COLOR_3_PLAYER;
@@ -34,6 +36,8 @@ void drawSpaceship(int16_t anchorX, int16_t anchorY, int16_t x_pos, int16_t y_po
 		color7 = COLOR_7_PLAYER;
 	} 
     else {
+        tft.fillCircle(x_pos, y_pos, (size+1)*scale, TFT_BLACK);
+        scale *= -1;
 		color1 = COLOR_1_ENEMY;
 		color2 = COLOR_2_ENEMY;
 		color3 = COLOR_3_ENEMY;
@@ -42,7 +46,7 @@ void drawSpaceship(int16_t anchorX, int16_t anchorY, int16_t x_pos, int16_t y_po
 		color6 = COLOR_6_ENEMY;
 		color7 = COLOR_7_ENEMY;
 	}
-    tft.fillCircle(x_pos, y_pos, bot_size*scale, TFT_BLACK);
+
 	// code for color 1
 	tft.fillRect(anchorX, anchorY-4*scale, scale, scale, color1);
 	tft.fillRect(anchorX, anchorY+6*scale, scale, scale, color1);

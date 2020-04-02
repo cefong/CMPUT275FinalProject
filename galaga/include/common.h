@@ -15,8 +15,8 @@
 #define BUTT            21
 
 #define speed           4
-#define player_size     7
-#define bot_size        7
+#define size            7
+#define SCALE           3
 
 #define PLAY_NUM_BULLET 100
 

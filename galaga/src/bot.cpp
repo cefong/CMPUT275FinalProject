@@ -1,6 +1,8 @@
 #include "bot.h"
 static int is_left = 0;
 static alien bot_loc;
+static bool is_jump = false;
+static int temp = 0;
 systime_t timestamp_start_b, timestamp_end_b, timestamp_start_j, timestamp_end_j;
 void bot() {
     bot_loc.x = WIDTH/2;
@@ -28,8 +30,16 @@ void bot() {
             timestamp_end_j = chVTGetSystemTime();
             if(timestamp_end_j - timestamp_start_j >= TIME_MS2I(time_delay_jump)) {
                 // move player
-                bot_loc.y += 25;
+                is_jump = true;
                 timestamp_start_j = chVTGetSystemTime();
+            }
+            if(is_jump) {
+                bot_loc.y++;
+                temp++;
+                if(temp >= 25) {
+                    is_jump = false;
+                    temp = 0;
+                }
             }
             switch(is_left){
                 case 0:
@@ -41,11 +51,11 @@ void bot() {
             }
             
             // constrain x position of bot
-            bot_loc.x = constrain(bot_loc.x, bot_size*3, WIDTH - bot_size*3);
-            if(bot_loc.x <= bot_size*3 && !is_left) {
+            bot_loc.x = constrain(bot_loc.x, size*SCALE, WIDTH - size*SCALE);
+            if(bot_loc.x <= size*SCALE && !is_left) {
                 is_left = 1;
             }
-            else if(bot_loc.x >= WIDTH - bot_size*3 && is_left) {
+            else if(bot_loc.x >= WIDTH - size*SCALE && is_left) {
                 is_left = 0;
             }
             // constrain y position of bot
