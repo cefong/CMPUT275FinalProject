@@ -2,8 +2,14 @@
 #include "character.h"
 extern bullet ammo[PLAY_NUM_BULLET];
 static bool start = true;
+#include "multiplayer.h"
+static int start = 1;
 static int selection = 0;
 static int cur_score = 0;
+static player_stats *player1;
+static player_stats *player2;  
+
+// for singleplayer
 static void main_screen_init() {
     // initialize basic screen
     tft.fillScreen(TFT_BLACK);
@@ -19,7 +25,14 @@ static void main_screen_init() {
     tft.print(cur_score);
 
 }
+// for multiplayer
+static void multi_screen_init() {
+    // initialize basic screen
+    tft.fillScreen(TFT_BLACK);
+    tft.fillRect(0, 50, WIDTH, 5, TFT_PURPLE);
+    tft.fillRect(0, HEIGHT - 50, WIDTH, 5, TFT_PURPLE);
 
+}
 static void high_score_show() {
     tft.fillScreen(TFT_BLACK);
     tft.drawLine(0, 50, WIDTH, 50, TFT_PURPLE);
@@ -35,9 +48,68 @@ static void high_score_show() {
 
 }
 
+// multiplayer initialization
+static bool multiplayer_init() {
+    player1->lives = 1;
+    player2->lives = 1;
+    Serial.end();
+    Serial.begin(9600);
+    Serial.println("R");
+    if(wait_timeout(1,500)) {
+        char r = Serial.read();
+        if(r == 'A') {
+            Serial.println("A");
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+    else {
+        return 0;
+    }
+}
+void show_selection() {
+    switch(selection){
+        // toggle between PLAY and HIGH SCORE options
+        case 0:
+        tft.setTextColor(TFT_BLACK, TFT_WHITE);
+        tft.setCursor(110, 200);
+        tft.print("PLAY");
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(65, 240);
+        tft.print("MULTIPLAYER");
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(65, 280);
+        tft.print("HIGH SCORE");
+        break;
+        case 1:
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(110, 200);
+        tft.print("PLAY");
+        tft.setTextColor(TFT_BLACK, TFT_WHITE);
+        tft.setCursor(65, 240);
+        tft.print("MULTIPLAYER");
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(65, 280);
+        tft.print("HIGH SCORE");
+        break;
+        case 2:
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(110, 200);
+        tft.print("PLAY");
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+        tft.setCursor(65, 240);
+        tft.print("MULTIPLAYER");
+        tft.setTextColor(TFT_BLACK, TFT_WHITE);
+        tft.setCursor(65, 280);
+        tft.print("HIGH SCORE");
+        break;
+    }
+}
 
 void engine() {
-    if(start) {
+    if(start == 1) {
         // if we are just starting, display main screen
         chMsgSend(player_thread, start);
         tft.setCursor(35, 100);
@@ -45,40 +117,23 @@ void engine() {
         tft.setTextColor(TFT_RED, TFT_BLACK);
         tft.print("GALAGA");
         tft.setTextSize(3);
-        switch(selection){
-            // toggle between PLAY and HIGH SCORE options
-            case 0:
-            tft.setTextColor(TFT_BLACK, TFT_WHITE);
-            tft.setCursor(110, 200);
-            tft.print("PLAY");
-            tft.setTextColor(TFT_WHITE, TFT_BLACK);
-            tft.setCursor(65, 240);
-            tft.print("HIGH SCORE");
-            break;
-            case 1:
-            tft.setTextColor(TFT_WHITE, TFT_BLACK);
-            tft.setCursor(110, 200);
-            tft.print("PLAY");
-            tft.setTextColor(TFT_BLACK, TFT_WHITE);
-            tft.setCursor(65, 240);
-            tft.print("HIGH SCORE");
-            break;
-            case 2:
-            break;
-        }
+        show_selection();
         chMsgWait();
         msg_t mess = chMsgGet(player_thread);
-        selection += mess;
-        if(selection > 1) selection = 0;
-        if(selection < 0) selection = 1;
+        selection -= mess;
+        if(selection > 2) selection = 0;
+        else if(selection < 0) selection = 2;
         chMsgRelease(player_thread, mess);
         eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
         if(butt_trig && selection == 0) {
             // if button is pressed and selected PLAY
-            start = false;
+            start = 0;
+        }
+        else if(butt_trig && selection == 1) {
+            start = 2;
         }
     }
-    else {
+    else if(start == 0) {
         main_screen_init();
         // initialize player and bot
         player_stats *player;
@@ -118,6 +173,53 @@ void engine() {
             if(bot->is_fire) {
                 // if bot is firing, fire a bullet from alien position
                 fire_bullet(false, bot->x, bot->y);
+            }
+        }
+    }
+    else if(start == 2) {
+        tft.fillScreen(TFT_BLACK);
+        while(!multiplayer_init()) {
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(30, 200);
+            tft.setTextSize(2);
+            tft.print("Waiting to connect...");
+            eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
+            if(butt_trig) {
+                start = 1;
+                tft.fillScreen(TFT_BLACK);
+                break;
+            }
+        }
+        if(start == 2) {
+            tft.print("Success!");
+            multi_screen_init();    
+        }
+        int x_temp_1, x_temp_2;
+        while(start == 2) {
+            chMsgSend(player_thread, start);
+            chMsgSend(player2_thread, start);
+            drawSpaceship(player1->x, player1->y, x_temp_1, player1->y, SCALE, true);
+            drawSpaceship(player2->x, player2->y, x_temp_2, player2->y, SCALE, false);
+            bullet_update();
+            x_temp_2 = player2->x;
+            x_temp_1 = player1->x;
+            chMsgWait();
+            // update player1
+            player1 = (player_stats*)chMsgGet(player_thread);
+            chMsgRelease(player_thread, (msg_t)&player1);
+            chMsgWait();
+            // update player2
+            player2 = (player_stats*)chMsgGet(player2_thread);
+            chMsgRelease(player2_thread, (msg_t)&player2);
+            // update player2
+
+            if(player1->is_fire) {
+                // if player1 is firing, fire a bullet from player1 position
+                fire_bullet(true, player1->x, player1->y);
+            }
+            if(player2->is_fire) {
+                // if player2 is firing, fire a bullet from player2 position
+                fire_bullet(false, player2->x, player2->y);
             }
         }
     }

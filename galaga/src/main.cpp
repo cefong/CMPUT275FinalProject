@@ -5,6 +5,11 @@ static THD_FUNCTION(Player, arg) {
   (void)arg;
   player();
 }
+static THD_WORKING_AREA(waPlayer2, 128);
+static THD_FUNCTION(Player2, arg) {
+  (void)arg;
+  multiplayer();
+}
 
 static THD_WORKING_AREA(waBot, 1024);
 static THD_FUNCTION(Bot, arg) {
@@ -35,14 +40,17 @@ void interruptHandler() {
 }
 
 void chSetup() {
-  player_thread = chThdCreateStatic(waPlayer, sizeof(waPlayer), NORMALPRIO, Player, NULL);
-  engine_thread = chThdCreateStatic(waEngine, sizeof(waEngine), NORMALPRIO + 1, Engine, NULL);
-  bot_thread    = chThdCreateStatic(waBot, sizeof(waBot), NORMALPRIO, Bot, NULL);
+  player_thread  = chThdCreateStatic(waPlayer, sizeof(waPlayer), NORMALPRIO, Player, NULL);
+  player2_thread = chThdCreateStatic(waPlayer2, sizeof(waPlayer2), NORMALPRIO, Player2, NULL);
+  engine_thread  = chThdCreateStatic(waEngine, sizeof(waEngine), NORMALPRIO + 1, Engine, NULL);
+  bot_thread     = chThdCreateStatic(waBot, sizeof(waBot), NORMALPRIO, Bot, NULL);
 }
+
 void setup() {
   Serial.begin(9600);
   // put your setup code here, to run once
   pinMode(BUTT, INPUT_PULLUP);
+  // setting up interrupt pin 21
   attachInterrupt(digitalPinToInterrupt(BUTT), interruptHandler, FALLING);
   pinMode(13, OUTPUT);
   chBegin(chSetup);

@@ -8,6 +8,7 @@
 
 extern thread_t *engine_thread;
 extern thread_t *player_thread;
+extern thread_t *player2_thread;
 extern thread_t *bot_thread;
 
 
