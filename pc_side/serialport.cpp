@@ -1,4 +1,4 @@
-#include "SerialPort.h"
+#include "serialport.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -22,7 +22,7 @@ SerialPort::SerialPort(const char *portName) {
   // zero out all fields of the newtio struct
   bzero(&newtio, sizeof(newtio));
 
-  newtio.c_cflag = B115200 | CRTSCTS | CS8 | CLOCAL | CREAD;
+  newtio.c_cflag = B9600 | CRTSCTS | CS8 | CLOCAL | CREAD;
   newtio.c_iflag = IGNCR; // carriage returns ('\r') are completely ignored when reading
   newtio.c_oflag = 0;
   newtio.c_lflag = ICANON;
