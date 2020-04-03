@@ -8,8 +8,6 @@
 
 using namespace std;
 
-bool start = false;
-
 string coordinate_to_serial(int x, int y, int is_fire) {
     string output = "";
     output.append("C ");
@@ -41,7 +39,6 @@ int main(int argc, char *argv[]) {
         //int c = getchar();
         if(input[0] == 'R') {
             Serial.writeline("A\n");
-            start = true;
             x = WIDTH/2;
             y = 80;
             is_fire = 0;
@@ -61,5 +58,6 @@ int main(int argc, char *argv[]) {
         }
         
     }
+    return 0;
 }
     

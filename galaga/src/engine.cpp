@@ -255,7 +255,6 @@ void engine() {
             chMsgRelease(player_thread, (msg_t)&player_temp);
             if(player.is_fire) {
                 // if player is firing, fire a bullet from player position
-                Serial.println("fire");
                 fire_bullet(&player);
             }
             if(bot_loc[0].is_active) {
