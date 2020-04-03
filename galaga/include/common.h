@@ -26,23 +26,25 @@
 //     int y;
 // };
 
-struct alien {
-    int lives; // number of lives this alien has (1-3)
-    int x; // x position where the alien is on the screen (0-320)
-    int y; // y position of the alien (will stay constant until it jumpes as the aliens can only move side to side)
-    bool is_fire = false;
-};
 // as alien moves down the rows, update its y position by like 10 pixels
 // allow x position to move/follow player
 // randomly generate lives when you generate alien
 
-struct player_stats {
+struct player_alien {
     int lives;
     int x;
     int y;
     bool is_fire = false;
+    bool is_player = false;
+    bool is_active;
 };
 
+struct bullet {
+    bool active = false;
+    bool player;
+    int x = 0;
+    int y = 0;
+};
 
 
 

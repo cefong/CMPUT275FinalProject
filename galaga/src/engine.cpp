@@ -2,12 +2,13 @@
 #include "character.h"
 #include "multiplayer.h"
 extern bullet ammo[PLAY_NUM_BULLET];
+extern player_alien bot_loc[100];
 // define structs and initial variables
 static int start = 1;
 static int selection = 0;
 static int cur_score = 0;
-static player_stats *player1;
-static player_stats *player2;  
+static player_alien *player1;
+static player_alien *player2;  
 
 // for singleplayer
 static void main_screen_init() {
@@ -153,45 +154,44 @@ void engine() {
     else if(start == 0) {
         main_screen_init();
         // initialize player and bot structs and positions
-        player_stats *player;
-        alien *bot;
+        player_alien *player;
         player->x = WIDTH/2;
         player->y = HEIGHT-70;
-        bot->x = WIDTH/2;
-        bot->y = 70;
+        player->is_active = false;
+        bot_loc[0].x = WIDTH/2;
+        bot_loc[0].y = 80;
+        bot_loc[0].is_active = true;
         int x_temp_p, x_temp_b, y_temp_b;
-        bool firstRun = 1;
+        int firstRun = 0;
         while(start == 0){
             // start player and bot threads
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
             // draw the spaceships for player and bot
-            drawSpaceship(player->x, player->y, x_temp_p, player->y, SCALE, true);
-            drawSpaceship(bot->x, bot->y, x_temp_b, y_temp_b, SCALE, false);
+            drawSpaceship(player, x_temp_p, player->y, SCALE);
+            Serial.println();
+            drawSpaceship(&bot_loc[0], x_temp_b, y_temp_b, SCALE);
             // update bot and player positions
-            x_temp_b = bot->x;
+            x_temp_b = bot_loc[0].x;
             x_temp_p = player->x;
-            y_temp_b = bot->y;
+            y_temp_b = bot_loc[0].y;
             // handle bullets      
-            bullet_update(bot,player);
+            bullet_update(&bot_loc[0],player);
             chMsgWait();
             // update player
-            player = (player_stats*)chMsgGet(player_thread);
+            player = (player_alien*)chMsgGet(player_thread);
             chMsgRelease(player_thread, (msg_t)&player);
-
-            chMsgWait();
-            // update bot
-            bot = (alien*)chMsgGet(bot_thread);
-            chMsgRelease(bot_thread, (msg_t)&bot);
-
             if(player->is_fire) {
                 // if player is firing, fire a bullet from player position
-                fire_bullet(true, player->x, player->y);
+                fire_bullet(player);
             }
-            if(bot->is_fire) {
-                // if bot is firing, fire a bullet from alien position
-                fire_bullet(false, bot->x, bot->y);
+            if(bot_loc[0].is_active) {
+                if(bot_loc[0].is_fire) {
+                    // if bot is firing, fire a bullet from alien position
+                    fire_bullet(&bot_loc[0]);
+                }
             }
+
         }
     }
     else if(start == 2) {
@@ -220,31 +220,30 @@ void engine() {
             chMsgSend(player_thread, start);
             chMsgSend(player2_thread, start);
             // draw Spaceships are player positions
-            drawSpaceship(player1->x, player1->y, x_temp_1, player1->y, SCALE, true);
-            drawSpaceship(player2->x, player2->y, x_temp_2, player2->y, SCALE, false);
+            drawSpaceship(player1, x_temp_1, player1->y, SCALE);
+            drawSpaceship(player2, x_temp_2, player2->y, SCALE);
             // handle bullets
-            //bullet_update(player1,player2);
+            bullet_update(player1,player2);
             // update player positions
             x_temp_2 = player2->x;
             x_temp_1 = player1->x;
 
             chMsgWait();
             // update player1
-            player1 = (player_stats*)chMsgGet(player_thread);
+            player1 = (player_alien*)chMsgGet(player_thread);
             chMsgRelease(player_thread, (msg_t)&player1);
-
             chMsgWait();
             // update player2
-            player2 = (player_stats*)chMsgGet(player2_thread);
+            player2 = (player_alien*)chMsgGet(player2_thread);
             chMsgRelease(player2_thread, (msg_t)&player2);
 
             if(player1->is_fire) {
                 // if player1 is firing, fire a bullet from player1 position
-                fire_bullet(true, player1->x, player1->y);
+                fire_bullet(player1);
             }
             if(player2->is_fire) {
                 // if player2 is firing, fire a bullet from player2 position
-                fire_bullet(false, player2->x, player2->y);
+                fire_bullet(player2);
             }
         }
     }
