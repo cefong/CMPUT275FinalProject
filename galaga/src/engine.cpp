@@ -120,6 +120,73 @@ void show_selection() {
     }
 }
 
+int show_lives_selection() {
+    tft.fillScreen(TFT_BLACK);
+    int lives_select = 0;
+    while(1) {
+        chMsgSend(player_thread, 1);
+        chMsgWait();
+        msg_t mess = chMsgGet(player_thread);
+        lives_select -= mess;
+        if(lives_select > 2) lives_select = 0;
+        else if(lives_select < 0) lives_select = 2;
+        chMsgRelease(player_thread, mess);
+        eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
+        switch(lives_select){
+            // toggle between lives selection
+            case 0:
+            tft.setTextColor(TFT_BLACK, TFT_WHITE);
+            tft.setCursor(110, 200);
+            tft.print("ROOKIE");
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(50, 240);
+            tft.print("INTERMEDIATE");
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(100, 280);
+            tft.print("ADVANCED");
+            break;
+            case 1:
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(110, 200);
+            tft.print("ROOKIE");
+            tft.setTextColor(TFT_BLACK, TFT_WHITE);
+            tft.setCursor(50, 240);
+            tft.print("INTERMEDIATE");
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(100, 280);
+            tft.print("ADVANCED");
+            break;
+            case 2:
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(110, 200);
+            tft.print("ROOKIE");
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(50, 240);
+            tft.print("INTERMEDIATE");
+            tft.setTextColor(TFT_BLACK, TFT_WHITE);
+            tft.setCursor(100, 280);
+            tft.print("ADVANCED");
+            break;
+        }
+        if(butt_trig && lives_select == 0) {
+            // if button is pressed and selected beginner
+            return 5;
+        }
+        else if(butt_trig && lives_select == 1) {
+            // if button is pressed and selected intermediate
+            return 3;
+        }
+        else if (butt_trig && lives_select == 2) {
+            // if button is pressed and selected advanced
+            return 1;
+        }
+        
+    }
+
+}
+
+
+
 void engine() {
     /*
     Runs main engine thread, calls and controls other threads
@@ -152,9 +219,10 @@ void engine() {
         }
     }
     else if(start == 0) {
-        main_screen_init();
-        // initialize player and bot structs and positions
         player_alien *player;
+        player->lives = show_lives_selection();
+        main_screen_init();
+        // initialize player and bot structs and positions    
         player->x = WIDTH/2;
         player->y = HEIGHT-70;
         player->is_active = false;
