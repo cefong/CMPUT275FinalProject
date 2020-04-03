@@ -7,8 +7,6 @@ extern player_alien bot_loc[BOT_NUM];
 static int start = 1;
 static int selection = 0;
 static int cur_score = 0;
-static player_alien *player1;
-static player_alien *player2;  
 
 // for singleplayer
 static void main_screen_init() {
@@ -59,8 +57,6 @@ static bool multiplayer_init() {
     /*
     Initialize serial communication for multiplayer
     */
-    player1->lives = 1;
-    player2->lives = 1;
     Serial.end();
     Serial.begin(9600);
     Serial.println("R");
@@ -186,6 +182,13 @@ int show_lives_selection() {
 
 }
 
+void cast(player_alien*player1, player_alien*player2) {
+    player2->x = player1->x;
+    player2->y = player1->y;
+    player2->is_fire = player1->is_fire;
+    player2->is_active = player1->is_active;
+    player2->is_player = player1->is_player;
+}
 
 
 void engine() {
@@ -220,13 +223,13 @@ void engine() {
         }
     }
     else if(start == 0) {
-        player_alien *player;
-        player->lives = show_lives_selection();
+        player_alien player;
+        player.lives = show_lives_selection();
         main_screen_init();
         // initialize player and bot structs and positions    
-        player->x = WIDTH/2;
-        player->y = HEIGHT-70;
-        player->is_active = false;
+        player.x = WIDTH/2;
+        player.y = HEIGHT-70;
+        player.is_active = false;
         bot_loc[0].x = WIDTH/2;
         bot_loc[0].y = 80;
         bot_loc[0].is_active = true;
@@ -237,21 +240,23 @@ void engine() {
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
             // draw the spaceships for player and bot
-            drawSpaceship(player, x_temp_p, player->y, SCALE);
+            drawSpaceship(&player, x_temp_p, player.y, SCALE);
             drawSpaceship(&bot_loc[0], x_temp_b, y_temp_b, SCALE);
             // update bot and player positions
             x_temp_b = bot_loc[0].x;
-            x_temp_p = player->x;
+            x_temp_p = player.x;
             y_temp_b = bot_loc[0].y;
             // handle bullets      
-            bullet_update(&bot_loc[0],player);
+            bullet_update(&bot_loc[0],&player);
             chMsgWait();
             // update player
-            player = (player_alien*)chMsgGet(player_thread);
-            chMsgRelease(player_thread, (msg_t)&player);
-            if(player->is_fire) {
+            player_alien* player_temp = (player_alien*)chMsgGet(player_thread);
+            cast(player_temp, &player);
+            chMsgRelease(player_thread, (msg_t)&player_temp);
+            if(player.is_fire) {
                 // if player is firing, fire a bullet from player position
-                fire_bullet(player);
+                Serial.println("fire");
+                fire_bullet(&player);
             }
             if(bot_loc[0].is_active) {
                 if(bot_loc[0].is_fire) {
@@ -280,8 +285,11 @@ void engine() {
         }
         if(start == 2) {
             tft.print("Success!");
-            multi_screen_init();    
+            multi_screen_init();
+   
         }
+        static player_alien *player1;
+        static player_alien *player2;   
         int x_temp_1, x_temp_2;
         while(start == 2) {
             // start player threads
