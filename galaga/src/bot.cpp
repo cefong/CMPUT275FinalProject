@@ -2,7 +2,7 @@
 
 // define initial variables
 static int is_left = 0;
-player_alien bot_loc[100];
+player_alien bot_loc[BOT_NUM];
 static bool is_jump = false;
 static int temp = 0;
 // define variables for start and end times

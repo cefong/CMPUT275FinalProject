@@ -2,7 +2,7 @@
 #include "character.h"
 #include "multiplayer.h"
 extern bullet ammo[PLAY_NUM_BULLET];
-extern player_alien bot_loc[100];
+extern player_alien bot_loc[BOT_NUM];
 // define structs and initial variables
 static int start = 1;
 static int selection = 0;
@@ -16,6 +16,7 @@ static void main_screen_init() {
     tft.fillScreen(TFT_BLACK);
     tft.fillRect(0, 50, WIDTH, 5, TFT_PURPLE);
     tft.fillRect(0, HEIGHT - 50, WIDTH, 5, TFT_PURPLE);
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
     tft.setCursor(10, 10);
     tft.setTextSize(2);
     tft.print("HIGH SCORE");
@@ -237,7 +238,6 @@ void engine() {
             chMsgSend(bot_thread, start);
             // draw the spaceships for player and bot
             drawSpaceship(player, x_temp_p, player->y, SCALE);
-            Serial.println();
             drawSpaceship(&bot_loc[0], x_temp_b, y_temp_b, SCALE);
             // update bot and player positions
             x_temp_b = bot_loc[0].x;

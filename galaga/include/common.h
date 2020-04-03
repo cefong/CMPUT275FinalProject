@@ -19,6 +19,7 @@
 #define SCALE           3
 
 #define PLAY_NUM_BULLET 100
+#define BOT_NUM         10
 
 // struct loc {
 //     bool is_fire = false;
