@@ -28,10 +28,10 @@ void player_game() {
     int xVal = analogRead(JOY_HORZ);
     
     if(xVal < JOY_CENTER - JOY_DEADZONE) {
-        x -= 2;
+        x -= speed;
     }
     else if(xVal > JOY_CENTER + JOY_DEADZONE) {
-        x += 2;
+        x += speed;
     }
     x = constrain(x, size*SCALE, WIDTH - size*SCALE);
     player.x = x;

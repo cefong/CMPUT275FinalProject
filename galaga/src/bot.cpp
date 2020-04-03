@@ -61,10 +61,10 @@ void bot() {
                 switch(is_left){
                     // change direction at edges of screen
                     case 0:
-                    bot_loc[0].x -= 2;
+                    bot_loc[0].x -= speed;
                     break;
                     case 1:
-                    bot_loc[0].x += 2;
+                    bot_loc[0].x += speed;
                     break;
                 }
                 
