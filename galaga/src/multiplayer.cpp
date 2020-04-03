@@ -37,7 +37,8 @@ static uint8_t process() {
 
 }
 void multiplayer() {
-    player_stats player;
+    player_alien player;
+    player.is_player = false;
     while(1) {
         chMsgWait();
         msg_t sig = chMsgGet(engine_thread);

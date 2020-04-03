@@ -22,7 +22,8 @@ void player_start() {
 
 void player_game() {
     butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
-    player_stats player;
+    player_alien player;
+    player.is_player = true;
     player.is_fire = false;
     int xVal = analogRead(JOY_HORZ);
     
@@ -35,6 +36,7 @@ void player_game() {
     x = constrain(x, size*SCALE, WIDTH - size*SCALE);
     player.x = x;
     player.y = y;
+    player.is_active = true;
     if(butt_trig) {
         player.is_fire = true;
     }    
