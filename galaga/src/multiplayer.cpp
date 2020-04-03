@@ -37,34 +37,35 @@ static uint8_t process() {
 
 }
 void multiplayer() {
-    player_stats player;
+    player_alien player;
+    player.is_player = false;
     while(1) {
         chMsgWait();
         msg_t sig = chMsgGet(engine_thread);
         chMsgRelease(engine_thread, sig);
         if(sig == 2) {
-            if(wait_timeout(1, 500)) {
-                char r = Serial.read();
-                if(r == 'C') {
-                    process();
-                    String temp = buffer.substring(2,3);
-                    player.is_fire = temp.toInt();
-                    Serial.println(player.is_fire);
-                    int j = 4;
-                    while(buffer.substring(j, j+1) != " ") {
-                        j++;
-                    }
-                    temp = buffer.substring(4, j);
-                    player.x = temp.toInt();
-                    temp = buffer.substring(j + 1, buff_len);
-                    player.y = temp.toInt();
-                    Serial.println("A"); 
-                }
-            }
-            else {
-                //Error Handler
-            }
-            chMsgSend(engine_thread, (msg_t)&player);
+          Serial.println("R");
+          if(wait_timeout(1, 500)) {
+              char r = Serial.read();
+              if(r == 'C') {
+                  process();
+                  String temp = buffer.substring(2,3);
+                  player.is_fire = temp.toInt();
+                  int j = 4;
+                  while(buffer.substring(j, j+1) != " ") {
+                      j++;
+                  }
+                  temp = buffer.substring(4, j);
+                  player.x = temp.toInt();
+                  temp = buffer.substring(j + 1, buff_len);
+                  player.y = temp.toInt();
+                  Serial.println("A"); 
+              }
+          }
+          else {
+              //Error Handler
+          }
+          chMsgSend(engine_thread, (msg_t)&player);
         }
 
             
