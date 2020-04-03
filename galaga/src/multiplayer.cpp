@@ -44,13 +44,13 @@ void multiplayer() {
         msg_t sig = chMsgGet(engine_thread);
         chMsgRelease(engine_thread, sig);
         if(sig == 2) {
+          Serial.println("R");
           if(wait_timeout(1, 500)) {
               char r = Serial.read();
               if(r == 'C') {
                   process();
                   String temp = buffer.substring(2,3);
                   player.is_fire = temp.toInt();
-                  Serial.println(player.is_fire);
                   int j = 4;
                   while(buffer.substring(j, j+1) != " ") {
                       j++;

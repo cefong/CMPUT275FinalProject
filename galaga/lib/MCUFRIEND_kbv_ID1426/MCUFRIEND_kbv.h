@@ -8,7 +8,6 @@
 #define MCUFRIEND_KBV_H_   299
 
 //#define USE_SERIAL
-
 #if ARDUINO < 101
 #define USE_GFX_KBV
 #include "ADA_GFX_kbv.h"

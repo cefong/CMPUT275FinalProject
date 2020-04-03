@@ -182,7 +182,7 @@ int show_lives_selection() {
 
 }
 
-void cast(player_alien*player1, player_alien*player2) {
+void cast(player_alien* player1, player_alien* player2) {
     player2->x = player1->x;
     player2->y = player1->y;
     player2->is_fire = player1->is_fire;
@@ -270,6 +270,8 @@ void engine() {
     else if(start == 2) {
         // multiplayer
         tft.fillScreen(TFT_BLACK);
+        player_alien player1;
+        player_alien player2;
         while(!multiplayer_init()) {
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
             tft.setCursor(30, 200);
@@ -284,42 +286,48 @@ void engine() {
             }
         }
         if(start == 2) {
+            tft.setTextColor(TFT_BLACK, TFT_BLACK);
+            tft.setCursor(30, 200);
+            tft.setTextSize(2);
+            tft.print("Waiting to connect...");
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(100, 200);
             tft.print("Success!");
-            multi_screen_init();
-   
+            multi_screen_init();   
         }
-        static player_alien *player1;
-        static player_alien *player2;   
+   
         int x_temp_1, x_temp_2;
         while(start == 2) {
             // start player threads
             chMsgSend(player_thread, start);
             chMsgSend(player2_thread, start);
             // draw Spaceships are player positions
-            drawSpaceship(player1, x_temp_1, player1->y, SCALE);
-            drawSpaceship(player2, x_temp_2, player2->y, SCALE);
+            drawSpaceship(&player1, x_temp_1, player1.y, SCALE);
+            drawSpaceship(&player2, x_temp_2, player2.y, SCALE);
             // handle bullets
-            bullet_update(player1,player2);
+            bullet_update(&player1, &player2);
             // update player positions
-            x_temp_2 = player2->x;
-            x_temp_1 = player1->x;
+            x_temp_2 = player2.x;
+            x_temp_1 = player1.x;
 
             chMsgWait();
             // update player1
-            player1 = (player_alien*)chMsgGet(player_thread);
-            chMsgRelease(player_thread, (msg_t)&player1);
+            player_alien* player_temp = (player_alien*)chMsgGet(player_thread);
+            cast(player_temp, &player1);
+            chMsgRelease(player_thread, (msg_t)&player_temp);
             chMsgWait();
             // update player2
-            player2 = (player_alien*)chMsgGet(player2_thread);
-            chMsgRelease(player2_thread, (msg_t)&player2);
+            player_temp = (player_alien*)chMsgGet(player2_thread);
+            cast(player_temp, &player2);
+            chMsgRelease(player2_thread, (msg_t)&player_temp);
 
-            if(player1->is_fire) {
+            if(player1.is_fire) {
                 // if player1 is firing, fire a bullet from player1 position
-                fire_bullet(player1);
+                fire_bullet(&player1);
             }
-            if(player2->is_fire) {
+            if(player2.is_fire) {
                 // if player2 is firing, fire a bullet from player2 position
-                fire_bullet(player2);
+                fire_bullet(&player2);
             }
         }
     }
