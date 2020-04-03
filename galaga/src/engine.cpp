@@ -6,7 +6,23 @@ extern player_alien bot_loc[BOT_NUM];
 // define structs and initial variables
 static int start = 1;
 static int selection = 0;
+static int lives_select = 0;
+static int player_lives = 3;
 static int cur_score = 0;
+
+// drawing a heart to display lives stat
+static void drawHeart(int16_t anchorX, int16_t anchorY, int16_t scale, int16_t color = TFT_RED) {
+    // anchor point in upper left corner
+    tft.drawRect(anchorX, anchorY+2*scale, scale, 3*scale, color);
+    tft.drawRect(anchorX+1*scale, anchorY+1*scale, scale, 5*scale, color);
+    tft.drawRect(anchorX+2*scale, anchorY+1*scale, scale, 6*scale, color);
+    tft.drawRect(anchorX+3*scale, anchorY+2*scale, scale, 6*scale, color);
+    tft.drawRect(anchorX+4*scale, anchorY+3*scale, scale, 6*scale, color);
+    tft.drawRect(anchorX+8*scale, anchorY+2*scale, scale, 3*scale, color);
+    tft.drawRect(anchorX+7*scale, anchorY+1*scale, scale, 5*scale, color);
+    tft.drawRect(anchorX+6*scale, anchorY+1*scale, scale, 6*scale, color);
+    tft.drawRect(anchorX+5*scale, anchorY+2*scale, scale, 6*scale, color);   
+}
 
 // for singleplayer
 static void main_screen_init() {
@@ -23,8 +39,13 @@ static void main_screen_init() {
     tft.print("SCORE");
     tft.setCursor(200, 30);
     tft.print(cur_score);
-
+    tft.setCursor(10, HEIGHT - 40);
+    tft.print("LIVES");
+    for (int i = 0; i < player_lives; i++) {
+        drawHeart(10+i*30, HEIGHT - 20, 2);
+    }
 }
+
 // for multiplayer
 static void multi_screen_init() {
     // initialize basic screen
