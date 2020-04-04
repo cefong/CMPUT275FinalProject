@@ -263,7 +263,6 @@ void engine() {
                     fire_bullet(&bot_loc[0]);
                 }
             }
-
         }
     }
     else if(start == 2) {
