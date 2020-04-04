@@ -3,11 +3,12 @@
 #include "multiplayer.h"
 extern bullet ammo[PLAY_NUM_BULLET];
 extern player_alien bot_loc[BOT_NUM];
+
 // define structs and initial variables
 static int start = 1;
 static int selection = 0;
 static int lives_select = 0;
-static int player_lives = 3;
+static int player_lives;
 static int cur_score = 0;
 
 // drawing a heart to display lives stat
@@ -246,6 +247,7 @@ void engine() {
     else if(start == 0) {
         player_alien player;
         player.lives = show_lives_selection();
+        player_lives = player.lives;
         main_screen_init();
         // initialize player and bot structs and positions    
         player.x = WIDTH/2;
