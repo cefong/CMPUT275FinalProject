@@ -183,6 +183,13 @@ void bullet_update(player_alien *bot, player_alien *player) {
 							bot -> is_active = false;
 							bot -> x = 0;
 							bot -> y = 0;
+							// erase old score
+							tft.setTextColor(TFT_WHITE, TFT_BLACK);
+							tft.fillRect(200, 30, WIDTH - 200, 15, TFT_BLACK);
+							// update score
+							player -> score += 100;
+			            	tft.setCursor(200, 30);
+            				tft.print(player->score);
                         }
                 	}
                 }

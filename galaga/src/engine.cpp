@@ -251,6 +251,7 @@ void engine() {
     else if(start == 0) {
         player_alien player;
         player.lives = show_lives_selection();
+        player.score = 0;
         player_lives = player.lives;
         main_screen_init();
         // initialize player and bot structs and positions    
@@ -290,7 +291,6 @@ void engine() {
                     fire_bullet(&bot_loc[0]);
                 }
             }
-
         }
     }
     else if(start == 2) {
