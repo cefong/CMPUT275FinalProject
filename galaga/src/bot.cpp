@@ -5,7 +5,7 @@ static int is_left = 0;
 player_alien bot_loc[BOT_NUM];
 static bool is_jump = false;
 static int temp = 0;
-int speed = 2;
+int alien_speed = 2;
 // define variables for start and end times
 systime_t timestamp_start_b, timestamp_end_b, timestamp_start_j, timestamp_end_j,
 timestamp_start_s, timestamp_end_s;
@@ -64,16 +64,16 @@ void bot() {
                 }
                 timestamp_end_s = chVTGetSystemTime();
                 if ((timestamp_end_s - timestamp_start_s >= TIME_MS2I(time_delay_speed)) && (alien_speed <= 10)) {
-                    speed ++;
+                    alien_speed++;
                     timestamp_start_s = chVTGetSystemTime();
                 }
                 switch(is_left){
                     // change direction at edges of screen
                     case 0:
-                    bot_loc[0].x -= speed;
+                    bot_loc[0].x -= alien_speed;
                     break;
                     case 1:
-                    bot_loc[0].x += speed;
+                    bot_loc[0].x += alien_speed;
                     break;
                 }
                 
