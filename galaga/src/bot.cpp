@@ -5,8 +5,10 @@ static int is_left = 0;
 player_alien bot_loc[BOT_NUM];
 static bool is_jump = false;
 static int temp = 0;
+int speed = 2;
 // define variables for start and end times
-systime_t timestamp_start_b, timestamp_end_b, timestamp_start_j, timestamp_end_j;
+systime_t timestamp_start_b, timestamp_end_b, timestamp_start_j, timestamp_end_j,
+timestamp_start_s, timestamp_end_s;
 void bot() {
     /*
     Controls the movement of the bot based on time and player movement
@@ -17,9 +19,11 @@ void bot() {
     // define time delays for bullet and bot jump
     int time_delay_bullet = 2000;
     int time_delay_jump = 5000;
+    int time_delay_speed = 10000;
     // get both start times
     timestamp_start_b = chVTGetSystemTime();
     timestamp_start_j = chVTGetSystemTime();
+    timestamp_start_s = chVTGetSystemTime();
     bot_loc[0].lives = 3;
     while(1) {
         // get engine thread
@@ -57,6 +61,11 @@ void bot() {
                         is_jump = false;
                         temp = 0;
                     }
+                }
+                timestamp_end_s = chVTGetSystemTime();
+                if ((timestamp_end_s - timestamp_start_s >= TIME_MS2I(time_delay_speed)) && (alien_speed <= 10)) {
+                    alien_speed ++;
+                    timestamp_start_s = chVTGetSystemTime();
                 }
                 switch(is_left){
                     // change direction at edges of screen

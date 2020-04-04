@@ -262,7 +262,6 @@ void engine() {
         bot_loc[0].y = 80;
         bot_loc[0].is_active = true;
         int x_temp_p, x_temp_b, y_temp_b;
-        int firstRun = 0;
         while(start == 0){
             // start player and bot threads
             chMsgSend(player_thread, start);
@@ -291,7 +290,6 @@ void engine() {
                     fire_bullet(&bot_loc[0]);
                 }
             }
-
         }
     }
     else if(start == 2) {
