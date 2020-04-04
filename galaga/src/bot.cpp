@@ -64,7 +64,7 @@ void bot() {
                 }
                 timestamp_end_s = chVTGetSystemTime();
                 if ((timestamp_end_s - timestamp_start_s >= TIME_MS2I(time_delay_speed)) && (alien_speed <= 10)) {
-                    alien_speed ++;
+                    speed ++;
                     timestamp_start_s = chVTGetSystemTime();
                 }
                 switch(is_left){
