@@ -45,6 +45,10 @@ static void main_screen_init() {
     for (int i = 0; i < player_lives; i++) {
         drawHeart(10+i*30, HEIGHT - 20, 2);
     }
+    // main menu button
+    tft.fillRect(170, HEIGHT - 50, 2, 50, TFT_PURPLE);
+    tft.setCursor(192, HEIGHT - 28);
+    tft.print("MAIN MENU");
 }
 
 // for multiplayer
