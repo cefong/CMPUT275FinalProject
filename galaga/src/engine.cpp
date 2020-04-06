@@ -24,6 +24,12 @@ static void drawHeart(int16_t anchorX, int16_t anchorY, int16_t scale, int16_t c
     tft.drawRect(anchorX+5*scale, anchorY+2*scale, scale, 6*scale, color);   
 }
 
+static void update_health(int lives) {
+    for (int i = 0; i < lives; i++) {
+        drawHeart(10+i*30, HEIGHT - 20, 2);
+    }
+}
+
 // for singleplayer
 static void main_screen_init(int lives) {
     // initialize basic screen
@@ -41,9 +47,7 @@ static void main_screen_init(int lives) {
     tft.print(cur_score);
     tft.setCursor(10, HEIGHT - 40);
     tft.print("LIVES");
-    for (int i = 0; i < lives; i++) {
-        drawHeart(10+i*30, HEIGHT - 20, 2);
-    }
+    update_health(lives);
     // main menu button
     tft.fillRect(170, HEIGHT - 50, 2, 50, TFT_PURPLE);
     tft.setCursor(192, HEIGHT - 28);
@@ -262,11 +266,12 @@ void engine() {
         // initialize player and bot structs and positions    
         player.x = WIDTH/2;
         player.y = HEIGHT-70;
-        player.is_active = false;
+        player.is_active = true;
         bot_loc[0].x = WIDTH/2;
         bot_loc[0].y = 80;
         bot_loc[0].is_active = true;
-        int x_temp_p, x_temp_b, y_temp_b;
+        int live_temp_player = player.lives;
+        int x_temp_p, x_temp_b, y_temp_b ;
         while(start == 0){
             // start player and bot threads
             chMsgSend(player_thread, start);
@@ -275,6 +280,11 @@ void engine() {
             drawSpaceship(&player, x_temp_p, player.y, SCALE);
             drawSpaceship(&bot_loc[0], x_temp_b, y_temp_b, SCALE);
             // update bot and player positions
+            if(live_temp_player != player.lives) {
+                live_temp_player = player.lives;
+                update_health(live_temp_player);
+            }
+            
             x_temp_b = bot_loc[0].x;
             x_temp_p = player.x;
             y_temp_b = bot_loc[0].y;
@@ -283,8 +293,10 @@ void engine() {
             chMsgWait();
             // update player
             player_alien* player_temp = (player_alien*)chMsgGet(player_thread);
-            cast(player_temp, &player);
             chMsgRelease(player_thread, (msg_t)&player_temp);
+            if(player.is_active) {
+                cast(player_temp, &player);
+            }
             if(player.is_fire) {
                 // if player is firing, fire a bullet from player position
                 fire_bullet(&player);

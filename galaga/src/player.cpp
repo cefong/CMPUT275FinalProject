@@ -36,7 +36,7 @@ void player_game() {
     x = constrain(x, size*SCALE, WIDTH - size*SCALE);
     player.x = x;
     player.y = y;
-    player.is_active = true;
+    //player.is_active = true;
     if(butt_trig) {
         player.is_fire = true;
     }    
