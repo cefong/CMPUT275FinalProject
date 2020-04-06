@@ -445,6 +445,7 @@ void engine() {
             buttonVal = digitalRead(21);
         }
         start =1;
+        tft.fillScreen(TFT_BLACK);
 
         
     }
