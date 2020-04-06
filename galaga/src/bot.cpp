@@ -34,7 +34,7 @@ void bot() {
             if(unit->is_active) {
                 // get end time for bullet
                 timestamp_end_b = chVTGetSystemTime();
-                if(unit[1].x <= unit[0].x + 10 && unit[1].x >= unit[0].x - 10 && timestamp_end_b - timestamp_start_b >= time_delay_bullet) {
+                if(unit[1].x <= unit[0].x + 10 && unit[1].x >= unit[0].x - 10 && timestamp_end_b - timestamp_start_b >= TIME_MS2I(time_delay_bullet)) {
                     // fire bullet when in line with player
                     unit[1].is_fire = true;
                     // restart bullet time
@@ -65,6 +65,9 @@ void bot() {
                 timestamp_end_s = chVTGetSystemTime();
                 if ((timestamp_end_s - timestamp_start_s >= TIME_MS2I(time_delay_speed)) && (alien_speed <= 10)) {
                     alien_speed++;
+                    if(time_delay_bullet > 50) {
+                        time_delay_bullet -= 5;
+                    }
                     timestamp_start_s = chVTGetSystemTime();
                 }
                 switch(is_left){
@@ -89,6 +92,7 @@ void bot() {
                 if (unit[1].y >= HEIGHT - 95) {
                     // put game over here?
                     unit[1].y = 80;
+                    unit[0].lives--;
                 }
             }
         }

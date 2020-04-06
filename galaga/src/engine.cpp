@@ -102,6 +102,41 @@ static bool multiplayer_init() {
         return 0;
     }
 }
+void endScreen(int currentScore,int highScore){
+    while(start != 1) {
+        chThdSleepMilliseconds(100);
+        eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
+        tft.setCursor(35, 100);
+        tft.setTextSize(7);
+        tft.setTextColor(TFT_RED);
+        tft.print("GALAGA");
+        tft.setTextSize(5);
+        tft.setTextColor(TFT_WHITE);
+        tft.setCursor(30,200);
+        tft.print("GAME OVER");
+        if(currentScore > highScore){
+            tft.setCursor(35,250);
+            tft.setTextSize(3);
+            tft.print("NEW HIGH SCORE");
+        }
+        tft.setCursor(35,280);
+        tft.setTextSize(2);
+        tft.print("Current High Score: ");
+        tft.print(highScore); // change this to hi-score
+        tft.setCursor(35,330);
+        tft.print("Your Score: ");
+        tft.print(currentScore);
+        tft.setCursor(35,380);
+        tft.setTextSize(3);
+        tft.setTextColor(TFT_BLACK,TFT_WHITE);
+        tft.print("Return To Menu");
+        if(butt_trig == 1) {
+            start = 1;
+            tft.fillScreen(TFT_BLACK);
+        } 
+    }
+
+}
 
 void show_selection() {
     /*
@@ -290,7 +325,8 @@ void engine() {
                 cast(player_temp, &unit[0]);
             }
             chMsgRelease(player_thread, (msg_t)&player_temp);
-            if(unit[0].is_fire) {
+            eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
+            if(butt_trig) {
                 // if player is firing, fire a bullet from player position
                 fire_bullet(&unit[0]);
             }
@@ -299,11 +335,16 @@ void engine() {
                     // if bot is firing, fire a bullet from alien position
                     fire_bullet(&unit[1]);
                 }
-            } else {
+            } 
+            else {
                 unit[1].is_active = true;
                 unit[1].x = WIDTH/2;
                 unit[1].y = 85;
                 unit[1].lives = 3;
+            }
+            if(!unit[0].is_active) {
+                tft.fillScreen(TFT_BLACK);
+                endScreen(unit[0].score, 0);
             }
         }
     }
