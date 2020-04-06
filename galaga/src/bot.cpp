@@ -17,7 +17,7 @@ void bot() {
     unit[1].x = WIDTH/2;
     unit[1].y = 85;
     // define time delays for bullet and bot jump
-    int time_delay_bullet = 2000;
+    int time_delay_bullet = 200;
     int time_delay_jump = 5000;
     int time_delay_speed = 10000;
     // get both start times
@@ -31,11 +31,11 @@ void bot() {
         msg_t stat = chMsgGet(engine_thread);
         chMsgRelease(engine_thread, stat);
         if(!stat) {
-            // get end time for bullet
             if(unit->is_active) {
+                // get end time for bullet
                 timestamp_end_b = chVTGetSystemTime();
-                if(timestamp_end_b - timestamp_start_b >= TIME_MS2I(time_delay_bullet)) {
-                    // fire bullet
+                if(unit[1].x <= unit[0].x + 10 && unit[1].x >= unit[0].x - 10 && timestamp_end_b - timestamp_start_b >= time_delay_bullet) {
+                    // fire bullet when in line with player
                     unit[1].is_fire = true;
                     // restart bullet time
                     timestamp_start_b = chVTGetSystemTime();
@@ -87,6 +87,7 @@ void bot() {
                 }
                 // constrain y position of bot
                 if (unit[1].y >= HEIGHT - 95) {
+                    // put game over here?
                     unit[1].y = 80;
                 }
             }
