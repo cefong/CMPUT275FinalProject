@@ -2,7 +2,7 @@
 extern thread_t *engine_thread;
 
 static int x = WIDTH/2;
-static const int y = HEIGHT - 80;
+static const int y = HEIGHT - 85;
 
 static eventmask_t butt_trig;
 void player_start() {
@@ -40,7 +40,6 @@ void player_game() {
         player.is_fire = true;
     }    
     chMsgSend(engine_thread, (msg_t)&player);
-    
 }
 
 void player() {

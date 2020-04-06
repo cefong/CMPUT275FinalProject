@@ -23,17 +23,18 @@ static void draw_bullet(bool is_player, int x, int y) {
 
 
 }
-void drawSpaceship(player_alien* player, int16_t x_pos, int16_t y_pos, int16_t scale) {
+void drawSpaceship(player_alien* player, int16_t scale) {
 	/*
 	Draws the spaceships at player and bot locations
 	*/
+
 	if(player->is_active) {
 		int16_t color1, color2, color3, color4, color5, color6, color7;
 		int16_t anchorX = player->x;
 		int16_t anchorY = player->y;
 		// change colour of ship based on character type
 		if (player->is_player) {
-			tft.fillCircle(x_pos, y_pos, size*scale, TFT_BLACK);
+			tft.fillCircle(player->x_temp, player->y_temp, size*scale, TFT_BLACK);
 			color1 = COLOR_1_PLAYER;
 			color2 = COLOR_2_PLAYER;
 			color3 = COLOR_3_PLAYER;
@@ -43,7 +44,7 @@ void drawSpaceship(player_alien* player, int16_t x_pos, int16_t y_pos, int16_t s
 			color7 = COLOR_7_PLAYER;
 		} 
 		else {
-			tft.fillCircle(x_pos, y_pos, (size+1)*scale, TFT_BLACK);
+			tft.fillCircle(player->x_temp, player->y_temp, (size+1)*scale, TFT_BLACK);
 			scale *= -1;
 			color1 = COLOR_1_ENEMY;
 			color2 = COLOR_2_ENEMY;
@@ -53,7 +54,8 @@ void drawSpaceship(player_alien* player, int16_t x_pos, int16_t y_pos, int16_t s
 			color6 = COLOR_6_ENEMY;
 			color7 = COLOR_7_ENEMY;
 		}
-
+		player->x_temp = player->x;
+		player->y_temp = player->y;
 		// code for color 1
 		tft.fillRect(anchorX, anchorY-4*scale, scale, scale, color1);
 		tft.fillRect(anchorX, anchorY+6*scale, scale, scale, color1);
@@ -177,7 +179,7 @@ void bullet_update(player_alien *bot, player_alien *player) {
                     tft.setTextColor(TFT_RED);
                     if((((bot->x)+15) >= ammo[i].x) && (((bot->x)-15) <= ammo[i].x)  && (((bot->y)+15) >= ammo[i].y) && (((bot->y)-15) <= ammo[i].y) && bot->is_active ){
                         ammo[i].active=0;
-                        drawExplosion(bot->x,bot->y , 40, TFT_CYAN); // put radius as 40 so dont have to delete bullets 
+                        drawExplosion(bot->x,bot->y , 35, TFT_CYAN); // put radius as 40 so dont have to delete bullets 
                         bot->lives = (bot->lives)-1;
                         if((bot -> lives) == 0){ // do something when the bot dies.
 							bot -> is_active = false;

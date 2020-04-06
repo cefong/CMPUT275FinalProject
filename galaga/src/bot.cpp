@@ -15,7 +15,7 @@ void bot() {
     */
     // define initial position of bot
     unit[1].x = WIDTH/2;
-    unit[1].y = 80;
+    unit[1].y = 85;
     // define time delays for bullet and bot jump
     int time_delay_bullet = 2000;
     int time_delay_jump = 5000;

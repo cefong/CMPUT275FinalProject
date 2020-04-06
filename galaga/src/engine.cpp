@@ -7,7 +7,6 @@ player_alien unit[BOT_NUM];
 // define structs and initial variables
 static int start = 1;
 static int selection = 0;
-static int lives_select = 0;
 static int cur_score = 0;
 
 // drawing a heart to display lives stat
@@ -222,7 +221,6 @@ void cast(player_alien* player1, player_alien* player2) {
     player2->x = player1->x;
     player2->y = player1->y;
     player2->is_fire = player1->is_fire;
-    player2->is_active = player1->is_active;
     player2->is_player = player1->is_player;
 }
 
@@ -264,38 +262,34 @@ void engine() {
         main_screen_init(unit[0].lives);
         // initialize player and bot structs and positions    
         unit[0].x = WIDTH/2;
-        unit[0].y = HEIGHT-70;
+        unit[0].y = HEIGHT- 85;
         unit[0].is_active = true;
         unit[1].x = WIDTH/2;
-        unit[1].y = 80;
+        unit[1].y = 85;
         unit[1].is_active = true;
         int live_temp_player = unit[0].lives;
-        int x_temp_p, x_temp_b, y_temp_b ;
         while(start == 0){
             // start player and bot threads
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
             // draw the spaceships for player and bot
-            drawSpaceship(&unit[0], x_temp_p, unit[0].y, SCALE);
-            drawSpaceship(&unit[1], x_temp_b, y_temp_b, SCALE);
+            for(int i = 0; i < BOT_NUM; i++) {
+                drawSpaceship(&unit[i], SCALE);
+            }
             // update bot and player positions
             if(live_temp_player != unit[0].lives) {
                 live_temp_player = unit[0].lives;
                 update_health(live_temp_player);
             }
-            
-            x_temp_b = unit[1].x;
-            x_temp_p = unit[0].x;
-            y_temp_b = unit[1].y;
             // handle bullets      
             bullet_update(&unit[1],&unit[0]);
             chMsgWait();
             // update player
             player_alien* player_temp = (player_alien*)chMsgGet(player_thread);
-            chMsgRelease(player_thread, (msg_t)&player_temp);
             if(unit[0].is_active) {
                 cast(player_temp, &unit[0]);
             }
+            chMsgRelease(player_thread, (msg_t)&player_temp);
             if(unit[0].is_fire) {
                 // if player is firing, fire a bullet from player position
                 fire_bullet(&unit[0]);
@@ -343,8 +337,8 @@ void engine() {
             chMsgSend(player_thread, start);
             chMsgSend(player2_thread, start);
             // draw Spaceships are player positions
-            drawSpaceship(&player1, x_temp_1, player1.y, SCALE);
-            drawSpaceship(&player2, x_temp_2, player2.y, SCALE);
+            drawSpaceship(&player1, SCALE);
+            drawSpaceship(&player2, SCALE);
             // handle bullets
             bullet_update(&player1, &player2);
             // update player positions

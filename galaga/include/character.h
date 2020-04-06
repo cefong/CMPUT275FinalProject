@@ -43,7 +43,7 @@ extern MCUFRIEND_kbv tft;
 
 void fire_bullet(player_alien *player);
 void bullet_update(player_alien *bot, player_alien *player);
-void drawSpaceship(player_alien* player, int16_t x_pos, int16_t y_pos, int16_t scale);
+void drawSpaceship(player_alien* player, int16_t scale);
 
 
 
