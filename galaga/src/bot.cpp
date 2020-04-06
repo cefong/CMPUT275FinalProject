@@ -3,6 +3,7 @@
 // define initial variables
 static int is_left = 0;
 extern player_alien unit[BOT_NUM];
+extern bullet ammo[PLAY_NUM_BULLET];
 static bool is_jump = false;
 static int temp = 0;
 int alien_speed = 2;
@@ -34,7 +35,7 @@ void bot() {
             if(unit->is_active) {
                 // get end time for bullet
                 timestamp_end_b = chVTGetSystemTime();
-                if(unit[1].x <= unit[0].x + 10 && unit[1].x >= unit[0].x - 10 && timestamp_end_b - timestamp_start_b >= TIME_MS2I(time_delay_bullet)) {
+                if(unit[1].x <= unit[0].x + 15 && unit[1].x >= unit[0].x - 15 && timestamp_end_b - timestamp_start_b >= TIME_MS2I(time_delay_bullet)) {
                     // fire bullet when in line with player
                     unit[1].is_fire = true;
                     // restart bullet time
@@ -69,6 +70,20 @@ void bot() {
                         time_delay_bullet -= 5;
                     }
                     timestamp_start_s = chVTGetSystemTime();
+                }
+
+                // start with alien not dodging
+                bool is_dodge = false;
+                for(int i = 0; i < PLAY_NUM_BULLET; i++) {
+                    // iterate through bullets
+                    if (ammo[i].active && ammo[i].player 
+                    && ammo[i].x >= unit[1].x - 15 && ammo[i].x <= unit[1].x + 15
+                    && ammo[i].y <= unit[1].y + 50 && ammo[i].y >= unit[1].y + 10) {
+                        // if bullet is active and within range
+                        // bot dodges bullet if ammo is in line with it's x range and within 25 y pixels
+                        is_dodge = true;
+                        is_left = !is_left;
+                    }
                 }
                 switch(is_left){
                     // change direction at edges of screen
