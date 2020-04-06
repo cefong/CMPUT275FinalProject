@@ -155,12 +155,14 @@ void fire_bullet(player_alien *player) {
     }
 }
 
+
 void drawExplosion(int x, int y, int radius, uint16_t colorBull){
     tft.drawCircle(x,y , radius, colorBull);
     tft.fillCircle(x,y , radius, colorBull);
     tft.drawCircle(x,y , radius, TFT_BLACK);
     tft.fillCircle(x,y , radius, TFT_BLACK);
 }
+
 void bullet_update(player_alien *bot, player_alien *player) {
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {
         if(ammo[i].active) {
@@ -181,6 +183,13 @@ void bullet_update(player_alien *bot, player_alien *player) {
 							bot -> is_active = false;
 							bot -> x = 0;
 							bot -> y = 0;
+							// erase old score
+							tft.setTextColor(TFT_WHITE, TFT_BLACK);
+							tft.fillRect(200, 30, WIDTH - 200, 15, TFT_BLACK);
+							// update score
+							player -> score += 100;
+			            	tft.setCursor(200, 30);
+            				tft.print(player->score);
                         }
                 	}
                 }
@@ -190,10 +199,12 @@ void bullet_update(player_alien *bot, player_alien *player) {
                         ammo[i].active=0;
                         drawExplosion(player->x,player->y , 29, TFT_GREEN); // put radius samller than bot cause the floor gets removed at 40
                         player->lives = (player->lives)-1;
-                    
+						// erase heart at bottom of screen
+						tft.fillRect(10+(player->lives)*30, HEIGHT-20, 18, 18, TFT_BLACK);
                         if((player -> lives) == 0){ // do something when the player dies.
                             drawExplosion(player->x,player->y , 29, TFT_RED); // make sure game over
-							//player -> is_active = false;
+							// player -> is_active = false;
+							// exit out of game, display score and display option to return to main screen
                         }
                 	}
             	}

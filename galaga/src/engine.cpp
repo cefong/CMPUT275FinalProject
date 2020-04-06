@@ -3,6 +3,7 @@
 #include "multiplayer.h"
 extern bullet ammo[PLAY_NUM_BULLET];
 extern player_alien bot_loc[BOT_NUM];
+
 // define structs and initial variables
 static int start = 1;
 static int selection = 0;
@@ -43,6 +44,10 @@ static void main_screen_init(int lives) {
     for (int i = 0; i < lives; i++) {
         drawHeart(10+i*30, HEIGHT - 20, 2);
     }
+    // main menu button
+    tft.fillRect(170, HEIGHT - 50, 2, 50, TFT_PURPLE);
+    tft.setCursor(192, HEIGHT - 28);
+    tft.print("MAIN MENU");
 }
 
 // for multiplayer
