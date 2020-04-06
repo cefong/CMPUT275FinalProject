@@ -175,7 +175,7 @@ void bullet_update(player_alien *bot, player_alien *player) {
                 if(ammo[i].player) {
                     ammo[i].y -= BULLET_HEIGHT;
                     tft.setTextColor(TFT_RED);
-                    if((((bot->x)+15) >= ammo[i].x) & (((bot->x)-15) <= ammo[i].x)  & (((bot->y)+15) >= ammo[i].y) & (((bot->y)-15) <= ammo[i].y) ){
+                    if((((bot->x)+15) >= ammo[i].x) && (((bot->x)-15) <= ammo[i].x)  && (((bot->y)+15) >= ammo[i].y) && (((bot->y)-15) <= ammo[i].y) && bot->is_active ){
                         ammo[i].active=0;
                         drawExplosion(bot->x,bot->y , 40, TFT_CYAN); // put radius as 40 so dont have to delete bullets 
                         bot->lives = (bot->lives)-1;
@@ -195,7 +195,7 @@ void bullet_update(player_alien *bot, player_alien *player) {
                 }
                 else {
                     ammo[i].y += BULLET_HEIGHT;
-                    if((((player->x)+15) >= ammo[i].x) & (((player->x)-15) <= ammo[i].x)  & (((player->y)+15) >= ammo[i].y) & (((player->y)-15) <= ammo[i].y) ){
+                    if((((player->x)+15) >= ammo[i].x) && (((player->x)-15) <= ammo[i].x)  && (((player->y)+15) >= ammo[i].y) && (((player->y)-15) <= ammo[i].y) && player->is_active ){
                         ammo[i].active=0;
                         drawExplosion(player->x,player->y , 29, TFT_GREEN); // put radius samller than bot cause the floor gets removed at 40
                         player->lives = (player->lives)-1;
