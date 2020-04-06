@@ -261,7 +261,10 @@ void engine() {
     /*
     Runs main engine thread, calls and controls other threads
     */
-   int highScore =-1; // high score var
+   int highScoreOne =0; // high score for easy
+   int highScoreTwo =0; // high score for intermediate
+   int highScoreThree =0; // high score for hard
+   int difficulty; // store the difficulty 
    while(1){
     int endGame = 0; // check if game over
     int currentScore = 0; // store current game score 
@@ -294,6 +297,7 @@ void engine() {
     }
     else if(start == 0) {
         unit[0].lives = show_lives_selection();
+        difficulty = unit[0].lives;
         unit[0].score =0;
         asset_init();
         main_screen_init(unit[0].lives);
@@ -415,18 +419,33 @@ void engine() {
     }
     if(endGame == 1){ // no implmentation of highschore yet 
         bool newHighScore =0 ; // changes if hiscore reached
-        if(highScore < currentScore){
-            highScore = currentScore;
-            newHighScore=1;
-            
+        if(difficulty == 5){  //easiest level
+            if(highScoreOne <currentScore){
+                highScoreOne = currentScore;
+                newHighScore =1;
+            }
+            endScreen(currentScore,newHighScore,highScoreOne);
         }
-        endScreen(currentScore,newHighScore,highScore);
+        if(difficulty == 3){ //middle level
+            if(highScoreTwo <currentScore){
+                highScoreTwo = currentScore;
+                newHighScore =1;
+            }
+            endScreen(currentScore,newHighScore,highScoreTwo);
+        }
+        if(difficulty == 1){ //hardest level
+            if(highScoreThree <currentScore){
+                highScoreThree = currentScore;
+                newHighScore =1;
+            }
+             endScreen(currentScore,newHighScore,highScoreThree);
+        }
         int buttonVal = digitalRead(21);
-        while(buttonVal == 1){
+        while(buttonVal == 1){ 
             buttonVal = digitalRead(21);
         }
         start =1;
-        tft.fillScreen(TFT_BLACK);
+
         
     }
    }
