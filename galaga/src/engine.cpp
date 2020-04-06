@@ -299,6 +299,11 @@ void engine() {
                     // if bot is firing, fire a bullet from alien position
                     fire_bullet(&unit[1]);
                 }
+            } else {
+                unit[1].is_active = true;
+                unit[1].x = WIDTH/2;
+                unit[1].y = 85;
+                unit[1].lives = 3;
             }
         }
     }
