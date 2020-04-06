@@ -2,7 +2,7 @@
 #include "character.h"
 #include "multiplayer.h"
 extern bullet ammo[PLAY_NUM_BULLET];
-extern player_alien bot_loc[BOT_NUM];
+player_alien unit[BOT_NUM];
 
 // define structs and initial variables
 static int start = 1;
@@ -147,7 +147,7 @@ void show_selection() {
 }
 void asset_init() {
     for(int i = 0; i < BOT_NUM; i++) {
-        bot_loc[i].is_active = false;
+        unit[i].is_active = false;
     }
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {
         ammo[i].active = false;
@@ -259,52 +259,51 @@ void engine() {
         }
     }
     else if(start == 0) {
-        player_alien player;
-        player.lives = show_lives_selection();
+        unit[0].lives = show_lives_selection();
         asset_init();
-        main_screen_init(player.lives);
+        main_screen_init(unit[0].lives);
         // initialize player and bot structs and positions    
-        player.x = WIDTH/2;
-        player.y = HEIGHT-70;
-        player.is_active = true;
-        bot_loc[0].x = WIDTH/2;
-        bot_loc[0].y = 80;
-        bot_loc[0].is_active = true;
-        int live_temp_player = player.lives;
+        unit[0].x = WIDTH/2;
+        unit[0].y = HEIGHT-70;
+        unit[0].is_active = true;
+        unit[1].x = WIDTH/2;
+        unit[1].y = 80;
+        unit[1].is_active = true;
+        int live_temp_player = unit[0].lives;
         int x_temp_p, x_temp_b, y_temp_b ;
         while(start == 0){
             // start player and bot threads
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
             // draw the spaceships for player and bot
-            drawSpaceship(&player, x_temp_p, player.y, SCALE);
-            drawSpaceship(&bot_loc[0], x_temp_b, y_temp_b, SCALE);
+            drawSpaceship(&unit[0], x_temp_p, unit[0].y, SCALE);
+            drawSpaceship(&unit[1], x_temp_b, y_temp_b, SCALE);
             // update bot and player positions
-            if(live_temp_player != player.lives) {
-                live_temp_player = player.lives;
+            if(live_temp_player != unit[0].lives) {
+                live_temp_player = unit[0].lives;
                 update_health(live_temp_player);
             }
             
-            x_temp_b = bot_loc[0].x;
-            x_temp_p = player.x;
-            y_temp_b = bot_loc[0].y;
+            x_temp_b = unit[1].x;
+            x_temp_p = unit[0].x;
+            y_temp_b = unit[1].y;
             // handle bullets      
-            bullet_update(&bot_loc[0],&player);
+            bullet_update(&unit[1],&unit[0]);
             chMsgWait();
             // update player
             player_alien* player_temp = (player_alien*)chMsgGet(player_thread);
             chMsgRelease(player_thread, (msg_t)&player_temp);
-            if(player.is_active) {
-                cast(player_temp, &player);
+            if(unit[0].is_active) {
+                cast(player_temp, &unit[0]);
             }
-            if(player.is_fire) {
+            if(unit[0].is_fire) {
                 // if player is firing, fire a bullet from player position
-                fire_bullet(&player);
+                fire_bullet(&unit[0]);
             }
-            if(bot_loc[0].is_active) {
-                if(bot_loc[0].is_fire) {
+            if(unit[1].is_active) {
+                if(unit[1].is_fire) {
                     // if bot is firing, fire a bullet from alien position
-                    fire_bullet(&bot_loc[0]);
+                    fire_bullet(&unit[1]);
                 }
             }
         }
