@@ -8,7 +8,6 @@ extern player_alien bot_loc[BOT_NUM];
 static int start = 1;
 static int selection = 0;
 static int lives_select = 0;
-static int player_lives;
 static int cur_score = 0;
 
 // drawing a heart to display lives stat
@@ -26,7 +25,7 @@ static void drawHeart(int16_t anchorX, int16_t anchorY, int16_t scale, int16_t c
 }
 
 // for singleplayer
-static void main_screen_init() {
+static void main_screen_init(int lives) {
     // initialize basic screen
     tft.fillScreen(TFT_BLACK);
     tft.fillRect(0, 50, WIDTH, 5, TFT_PURPLE);
@@ -42,7 +41,7 @@ static void main_screen_init() {
     tft.print(cur_score);
     tft.setCursor(10, HEIGHT - 40);
     tft.print("LIVES");
-    for (int i = 0; i < player_lives; i++) {
+    for (int i = 0; i < lives; i++) {
         drawHeart(10+i*30, HEIGHT - 20, 2);
     }
     // main menu button
@@ -142,7 +141,14 @@ void show_selection() {
         break;
     }
 }
-
+void asset_init() {
+    for(int i = 0; i < BOT_NUM; i++) {
+        bot_loc[i].is_active = false;
+    }
+    for(int i = 0; i < PLAY_NUM_BULLET; i++) {
+        ammo[i].active = false;
+    }
+}
 int show_lives_selection() {
     tft.fillScreen(TFT_BLACK);
     int lives_select = 0;
@@ -251,9 +257,8 @@ void engine() {
     else if(start == 0) {
         player_alien player;
         player.lives = show_lives_selection();
-        player.score = 0;
-        player_lives = player.lives;
-        main_screen_init();
+        asset_init();
+        main_screen_init(player.lives);
         // initialize player and bot structs and positions    
         player.x = WIDTH/2;
         player.y = HEIGHT-70;
@@ -262,7 +267,6 @@ void engine() {
         bot_loc[0].y = 80;
         bot_loc[0].is_active = true;
         int x_temp_p, x_temp_b, y_temp_b;
-        int firstRun = 0;
         while(start == 0){
             // start player and bot threads
             chMsgSend(player_thread, start);
