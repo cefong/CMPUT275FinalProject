@@ -23,17 +23,18 @@ static void draw_bullet(bool is_player, int x, int y) {
 
 
 }
-void drawSpaceship(player_alien* player, int16_t x_pos, int16_t y_pos, int16_t scale) {
+void drawSpaceship(player_alien* player, int16_t scale) {
 	/*
 	Draws the spaceships at player and bot locations
 	*/
+
 	if(player->is_active) {
 		int16_t color1, color2, color3, color4, color5, color6, color7;
 		int16_t anchorX = player->x;
 		int16_t anchorY = player->y;
 		// change colour of ship based on character type
 		if (player->is_player) {
-			tft.fillCircle(x_pos, y_pos, size*scale, TFT_BLACK);
+			tft.fillCircle(player->x_temp, player->y_temp, size*scale, TFT_BLACK);
 			color1 = COLOR_1_PLAYER;
 			color2 = COLOR_2_PLAYER;
 			color3 = COLOR_3_PLAYER;
@@ -43,7 +44,7 @@ void drawSpaceship(player_alien* player, int16_t x_pos, int16_t y_pos, int16_t s
 			color7 = COLOR_7_PLAYER;
 		} 
 		else {
-			tft.fillCircle(x_pos, y_pos, (size+1)*scale, TFT_BLACK);
+			tft.fillCircle(player->x_temp, player->y_temp, (size+1)*scale, TFT_BLACK);
 			scale *= -1;
 			color1 = COLOR_1_ENEMY;
 			color2 = COLOR_2_ENEMY;
@@ -53,7 +54,8 @@ void drawSpaceship(player_alien* player, int16_t x_pos, int16_t y_pos, int16_t s
 			color6 = COLOR_6_ENEMY;
 			color7 = COLOR_7_ENEMY;
 		}
-
+		player->x_temp = player->x;
+		player->y_temp = player->y;
 		// code for color 1
 		tft.fillRect(anchorX, anchorY-4*scale, scale, scale, color1);
 		tft.fillRect(anchorX, anchorY+6*scale, scale, scale, color1);
@@ -155,12 +157,14 @@ void fire_bullet(player_alien *player) {
     }
 }
 
+
 void drawExplosion(int x, int y, int radius, uint16_t colorBull){
     tft.drawCircle(x,y , radius, colorBull);
     tft.fillCircle(x,y , radius, colorBull);
     tft.drawCircle(x,y , radius, TFT_BLACK);
     tft.fillCircle(x,y , radius, TFT_BLACK);
 }
+
 void bullet_update(player_alien *bot, player_alien *player) {
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {
         if(ammo[i].active) {
@@ -173,27 +177,36 @@ void bullet_update(player_alien *bot, player_alien *player) {
                 if(ammo[i].player) {
                     ammo[i].y -= BULLET_HEIGHT;
                     tft.setTextColor(TFT_RED);
-                    if((((bot->x)+15) >= ammo[i].x) & (((bot->x)-15) <= ammo[i].x)  & (((bot->y)+15) >= ammo[i].y) & (((bot->y)-15) <= ammo[i].y) ){
+                    if((((bot->x)+15) >= ammo[i].x) && (((bot->x)-15) <= ammo[i].x)  && (((bot->y)+15) >= ammo[i].y) && (((bot->y)-15) <= ammo[i].y) && bot->is_active ){
                         ammo[i].active=0;
-                        drawExplosion(bot->x,bot->y , 40, TFT_CYAN); // put radius as 40 so dont have to delete bullets 
+                        drawExplosion(bot->x,bot->y , 35, TFT_CYAN); // put radius as 40 so dont have to delete bullets 
                         bot->lives = (bot->lives)-1;
                         if((bot -> lives) == 0){ // do something when the bot dies.
 							bot -> is_active = false;
 							bot -> x = 0;
 							bot -> y = 0;
+							// erase old score
+							tft.setTextColor(TFT_WHITE, TFT_BLACK);
+							tft.fillRect(200, 30, WIDTH - 200, 15, TFT_BLACK);
+							// update score
+							player -> score += 100;
+			            	tft.setCursor(200, 30);
+            				tft.print(player->score);
                         }
                 	}
                 }
                 else {
                     ammo[i].y += BULLET_HEIGHT;
-                    if((((player->x)+15) >= ammo[i].x) & (((player->x)-15) <= ammo[i].x)  & (((player->y)+15) >= ammo[i].y) & (((player->y)-15) <= ammo[i].y) ){
+                    if((((player->x)+15) >= ammo[i].x) && (((player->x)-15) <= ammo[i].x)  && (((player->y)+15) >= ammo[i].y) && (((player->y)-15) <= ammo[i].y) && player->is_active ){
                         ammo[i].active=0;
                         drawExplosion(player->x,player->y , 29, TFT_GREEN); // put radius samller than bot cause the floor gets removed at 40
                         player->lives = (player->lives)-1;
-                    
+						// erase heart at bottom of screen
+						tft.fillRect(10+(player->lives)*30, HEIGHT-20, 18, 18, TFT_BLACK);
                         if((player -> lives) == 0){ // do something when the player dies.
                             drawExplosion(player->x,player->y , 29, TFT_RED); // make sure game over
-							//player -> is_active = false;
+							// player -> is_active = false;
+							// exit out of game, display score and display option to return to main screen
                         }
                 	}
             	}

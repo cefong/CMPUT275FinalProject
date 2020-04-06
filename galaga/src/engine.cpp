@@ -2,11 +2,11 @@
 #include "character.h"
 #include "multiplayer.h"
 extern bullet ammo[PLAY_NUM_BULLET];
-extern player_alien bot_loc[BOT_NUM];
+player_alien unit[BOT_NUM];
+
 // define structs and initial variables
 static int start = 1;
 static int selection = 0;
-static int lives_select = 0;
 static int cur_score = 0;
 
 // drawing a heart to display lives stat
@@ -21,6 +21,12 @@ static void drawHeart(int16_t anchorX, int16_t anchorY, int16_t scale, int16_t c
     tft.drawRect(anchorX+7*scale, anchorY+1*scale, scale, 5*scale, color);
     tft.drawRect(anchorX+6*scale, anchorY+1*scale, scale, 6*scale, color);
     tft.drawRect(anchorX+5*scale, anchorY+2*scale, scale, 6*scale, color);   
+}
+
+static void update_health(int lives) {
+    for (int i = 0; i < lives; i++) {
+        drawHeart(10+i*30, HEIGHT - 20, 2);
+    }
 }
 
 // for singleplayer
@@ -40,9 +46,11 @@ static void main_screen_init(int lives) {
     tft.print(cur_score);
     tft.setCursor(10, HEIGHT - 40);
     tft.print("LIVES");
-    for (int i = 0; i < lives; i++) {
-        drawHeart(10+i*30, HEIGHT - 20, 2);
-    }
+    update_health(lives);
+    // main menu button
+    tft.fillRect(170, HEIGHT - 50, 2, 50, TFT_PURPLE);
+    tft.setCursor(192, HEIGHT - 28);
+    tft.print("MAIN MENU");
 }
 
 // for multiplayer
@@ -138,7 +146,7 @@ void show_selection() {
 }
 void asset_init() {
     for(int i = 0; i < BOT_NUM; i++) {
-        bot_loc[i].is_active = false;
+        unit[i].is_active = false;
     }
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {
         ammo[i].active = false;
@@ -213,15 +221,50 @@ void cast(player_alien* player1, player_alien* player2) {
     player2->x = player1->x;
     player2->y = player1->y;
     player2->is_fire = player1->is_fire;
-    player2->is_active = player1->is_active;
     player2->is_player = player1->is_player;
 }
 
+void endScreen(int currentScore, int newHighScore,int highScore){
+    
+   tft.fillScreen(TFT_BLACK);
+   tft.setCursor(35, 100);
+        tft.setTextSize(7);
+        tft.setTextColor(TFT_RED);
+   tft.print("GALAGA");
+   tft.setTextSize(5);
+   tft.setTextColor(TFT_WHITE);
+   tft.setCursor(30,200);
+   tft.print("GAME OVER");
+   if(newHighScore ==1){
+    tft.setCursor(35,250);
+    tft.setTextSize(3);
+    tft.print("NEW HIGH SCORE");
+   }
+   tft.setCursor(35,280);
+   tft.setTextSize(2);
+   tft.print("Current High Score: ");
+    tft.print(highScore); // change this to hi-score
+    tft.setCursor(35,330);
+   tft.print("Your Score: ");
+   tft.print(currentScore);
+   tft.setCursor(35,380);
+   tft.setTextSize(3);
+   tft.setTextColor(TFT_BLACK,TFT_WHITE);
+   tft.print("Return To Menue");
+//    eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
+//    if(butt_trig) {
+//         engine();
+//     } 
+}
 
 void engine() {
     /*
     Runs main engine thread, calls and controls other threads
     */
+   int highScore =-1; // high score var
+   while(1){
+    int endGame = 0; // check if game over
+    int currentScore = 0; // store current game score 
     if(start == 1) {
         // if we are just starting, display main screen
         chMsgSend(player_thread, start);
@@ -250,48 +293,60 @@ void engine() {
         }
     }
     else if(start == 0) {
-        player_alien player;
-        player.lives = show_lives_selection();
+        unit[0].lives = show_lives_selection();
+        unit[0].score =0;
         asset_init();
-        main_screen_init(player.lives);
+        main_screen_init(unit[0].lives);
         // initialize player and bot structs and positions    
-        player.x = WIDTH/2;
-        player.y = HEIGHT-70;
-        player.is_active = false;
-        bot_loc[0].x = WIDTH/2;
-        bot_loc[0].y = 80;
-        bot_loc[0].is_active = true;
-        int x_temp_p, x_temp_b, y_temp_b;
-        int firstRun = 0;
-        while(start == 0){
+        unit[0].x = WIDTH/2;
+        unit[0].y = HEIGHT- 85;
+        unit[0].is_active = true;
+        unit[1].x = WIDTH/2;
+        unit[1].y = 85;
+        unit[1].is_active = true;
+        int live_temp_player = unit[0].lives;
+        
+        while(start == 0 & endGame ==0){
             // start player and bot threads
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
             // draw the spaceships for player and bot
-            drawSpaceship(&player, x_temp_p, player.y, SCALE);
-            drawSpaceship(&bot_loc[0], x_temp_b, y_temp_b, SCALE);
+            for(int i = 0; i < BOT_NUM; i++) {
+                drawSpaceship(&unit[i], SCALE);
+            }
             // update bot and player positions
-            x_temp_b = bot_loc[0].x;
-            x_temp_p = player.x;
-            y_temp_b = bot_loc[0].y;
+            if(live_temp_player != unit[0].lives) {
+                live_temp_player = unit[0].lives;
+                update_health(live_temp_player);
+            }
             // handle bullets      
-            bullet_update(&bot_loc[0],&player);
+            bullet_update(&unit[1],&unit[0]);
+            if((unit[0].lives) == 0){
+                endGame = 1;
+                currentScore = unit[0].score;
+            }
             chMsgWait();
             // update player
             player_alien* player_temp = (player_alien*)chMsgGet(player_thread);
-            cast(player_temp, &player);
+            if(unit[0].is_active) {
+                cast(player_temp, &unit[0]);
+            }
             chMsgRelease(player_thread, (msg_t)&player_temp);
-            if(player.is_fire) {
+            if(unit[0].is_fire) {
                 // if player is firing, fire a bullet from player position
-                fire_bullet(&player);
+                fire_bullet(&unit[0]);
             }
-            if(bot_loc[0].is_active) {
-                if(bot_loc[0].is_fire) {
+            if(unit[1].is_active) {
+                if(unit[1].is_fire) {
                     // if bot is firing, fire a bullet from alien position
-                    fire_bullet(&bot_loc[0]);
+                    fire_bullet(&unit[1]);
                 }
+            } else {
+                unit[1].is_active = true;
+                unit[1].x = WIDTH/2;
+                unit[1].y = 85;
+                unit[1].lives = 3;
             }
-
         }
     }
     else if(start == 2) {
@@ -329,8 +384,8 @@ void engine() {
             chMsgSend(player_thread, start);
             chMsgSend(player2_thread, start);
             // draw Spaceships are player positions
-            drawSpaceship(&player1, x_temp_1, player1.y, SCALE);
-            drawSpaceship(&player2, x_temp_2, player2.y, SCALE);
+            drawSpaceship(&player1, SCALE);
+            drawSpaceship(&player2, SCALE);
             // handle bullets
             bullet_update(&player1, &player2);
             // update player positions
@@ -358,4 +413,21 @@ void engine() {
             }
         }
     }
+    if(endGame == 1){ // no implmentation of highschore yet 
+        bool newHighScore =0 ; // changes if hiscore reached
+        if(highScore < currentScore){
+            highScore = currentScore;
+            newHighScore=1;
+            
+        }
+        endScreen(currentScore,newHighScore,highScore);
+        int buttonVal = digitalRead(21);
+        while(buttonVal == 1){
+            buttonVal = digitalRead(21);
+        }
+        start =1;
+        tft.fillScreen(TFT_BLACK);
+        
+    }
+   }
 }
