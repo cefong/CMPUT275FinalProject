@@ -2,7 +2,7 @@
 #include "character.h"
 #include "multiplayer.h"
 #include "high_score.h"
-
+#include <TouchScreen.h>
 
 extern bullet ammo[PLAY_NUM_BULLET];
 player_alien unit[BOT_NUM];
@@ -13,6 +13,19 @@ extern int time_delay_speed;
 // define structs and initial variables
 static int start = 1;
 static int selection = 0;
+
+TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
+
+static void processTouchScreen(int16_t *screen_x, int16_t *screen_y) {
+    TSPoint touch  = ts.getPoint();
+    pinMode(YP, OUTPUT);
+    pinMode(XM, OUTPUT);
+    if(touch.z < MINPRESSURE || touch.z > MAXPRESSURE) return;
+    *screen_x = map(touch.y, TS_MINX, TS_MAXX, HEIGHT - 1, 0);
+    *screen_y = map(touch.x, TS_MINY, TS_MAXY, WIDTH - 1, 0);
+    chThdSleepMilliseconds(5);
+}
+
 
 static void update_health(int lives) {
     for (int i = 0; i < lives; i++) {
@@ -387,12 +400,19 @@ void engine() {
         main_screen_init(&unit[0], high_score);
         int live_temp_player = unit[0].lives;
         while(start == 0){
+            int16_t touch_x = 0, touch_y = 0;
             // start player and bot threads
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
             // draw the spaceships for player and bot
             tft.fillRect(0, 50, WIDTH, 5, TFT_PURPLE);
             tft.fillRect(0, HEIGHT - 50, WIDTH, 5, TFT_PURPLE);
+            if(high_score < unit[0].score) {
+                tft.setTextColor(TFT_WHITE, TFT_BLACK);
+                tft.setCursor(10, 30);
+                tft.setTextSize(2);
+                tft.print(unit[0].score);
+            }
             for(int i = 0; i < BOT_NUM; i++) {
                 drawSpaceship(&unit[i], SCALE);
             }
@@ -427,7 +447,13 @@ void engine() {
                 unit[1].y = 90;
                 unit[1].lives = 3;
             }
-            if(!unit[0].is_active) {
+            processTouchScreen(&touch_x, &touch_y);
+            if(touch_y >= 0 && touch_y <= WIDTH - 170 && touch_x >= HEIGHT - 50 && touch_x <= HEIGHT) {
+                tft.fillScreen(TFT_BLACK);
+                endScreen(unit[0].score, high_score, mode);
+
+            }
+            else if(!unit[0].is_active) {
                 tft.fillScreen(TFT_BLACK);
                 endScreen(unit[0].score, high_score, mode);
             }
