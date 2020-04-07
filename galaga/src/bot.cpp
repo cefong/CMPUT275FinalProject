@@ -1,12 +1,16 @@
 #include "bot.h"
 
 // define initial variables
-static int is_left = 0;
+static bool is_left = 0;
 extern player_alien unit[BOT_NUM];
 extern bullet ammo[PLAY_NUM_BULLET];
 static bool is_jump = false;
 static int temp = 0;
 int alien_speed = 2;
+// define time delays for bullet and bot jump
+int time_delay_bullet = 200;
+int time_delay_jump = 5000;
+int time_delay_speed = 10000;
 // define variables for start and end times
 systime_t timestamp_start_b, timestamp_end_b, timestamp_start_j, timestamp_end_j,
 timestamp_start_s, timestamp_end_s;
@@ -16,11 +20,7 @@ void bot() {
     */
     // define initial position of bot
     unit[1].x = WIDTH/2;
-    unit[1].y = 85;
-    // define time delays for bullet and bot jump
-    int time_delay_bullet = 200;
-    int time_delay_jump = 5000;
-    int time_delay_speed = 10000;
+    unit[1].y = 90 ;
     // get both start times
     timestamp_start_b = chVTGetSystemTime();
     timestamp_start_j = chVTGetSystemTime();

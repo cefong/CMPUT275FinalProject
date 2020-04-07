@@ -33,7 +33,6 @@ void interruptHandler() {
   // set a flag to signal Engine Thread
   CH_IRQ_PROLOGUE();
   chSysLockFromISR();
-  chEvtSignalI(player_thread, 1);
   chEvtSignalI(engine_thread, 1);
   chSysUnlockFromISR();
   CH_IRQ_EPILOGUE();

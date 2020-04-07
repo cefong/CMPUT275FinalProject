@@ -4,25 +4,12 @@
 extern bullet ammo[PLAY_NUM_BULLET];
 player_alien unit[BOT_NUM];
 extern int alien_speed;
-
+extern int time_delay_bullet;
+extern int time_delay_jump;
+extern int time_delay_speed;
 // define structs and initial variables
 static int start = 1;
 static int selection = 0;
-static int cur_score = 0;
-
-// drawing a heart to display lives stat
-static void drawHeart(int16_t anchorX, int16_t anchorY, int16_t scale, int16_t color = TFT_RED) {
-    // anchor point in upper left corner
-    tft.drawRect(anchorX, anchorY+2*scale, scale, 3*scale, color);
-    tft.drawRect(anchorX+1*scale, anchorY+1*scale, scale, 5*scale, color);
-    tft.drawRect(anchorX+2*scale, anchorY+1*scale, scale, 6*scale, color);
-    tft.drawRect(anchorX+3*scale, anchorY+2*scale, scale, 6*scale, color);
-    tft.drawRect(anchorX+4*scale, anchorY+3*scale, scale, 6*scale, color);
-    tft.drawRect(anchorX+8*scale, anchorY+2*scale, scale, 3*scale, color);
-    tft.drawRect(anchorX+7*scale, anchorY+1*scale, scale, 5*scale, color);
-    tft.drawRect(anchorX+6*scale, anchorY+1*scale, scale, 6*scale, color);
-    tft.drawRect(anchorX+5*scale, anchorY+2*scale, scale, 6*scale, color);   
-}
 
 static void update_health(int lives) {
     for (int i = 0; i < lives; i++) {
@@ -31,7 +18,7 @@ static void update_health(int lives) {
 }
 
 // for singleplayer
-static void main_screen_init(int lives) {
+static void main_screen_init(player_alien* player, int highscore) {
     // initialize basic screen
     tft.fillScreen(TFT_BLACK);
     tft.fillRect(0, 50, WIDTH, 5, TFT_PURPLE);
@@ -40,14 +27,17 @@ static void main_screen_init(int lives) {
     tft.setCursor(10, 10);
     tft.setTextSize(2);
     tft.print("HIGH SCORE");
+    tft.setCursor(10, 30);
+    tft.setTextSize(2);
+    tft.print(highscore);
     tft.setCursor(200, 10);
     tft.setTextSize(2);
     tft.print("SCORE");
     tft.setCursor(200, 30);
-    tft.print(cur_score);
+    tft.print(player->score);
     tft.setCursor(10, HEIGHT - 40);
     tft.print("LIVES");
-    update_health(lives);
+    update_health(player->lives);
     // main menu button
     tft.fillRect(170, HEIGHT - 50, 2, 50, TFT_PURPLE);
     tft.setCursor(192, HEIGHT - 28);
@@ -77,7 +67,6 @@ static void high_score_show() {
     tft.setTextSize(2);
     tft.print("SCORE");
     tft.setCursor(200, 30);
-    tft.print(cur_score);
 
 }
 
@@ -103,7 +92,7 @@ static bool multiplayer_init() {
         return 0;
     }
 }
-void endScreen(int currentScore,int highScore){
+static void endScreen(int currentScore, int highScore){
     while(start != 1) {
         chThdSleepMilliseconds(100);
         eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
@@ -181,12 +170,23 @@ void show_selection() {
     }
 }
 void asset_init() {
+    time_delay_bullet = 200;
+    time_delay_jump   = 5000;
+    time_delay_speed  = 10000;
+    alien_speed = 2;
     for(int i = 0; i < BOT_NUM; i++) {
         unit[i].is_active = false;
+        unit[i].score = 0;
     }
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {
         ammo[i].active = false;
     }
+    unit[0].x = WIDTH/2;
+    unit[0].y = HEIGHT- 85;
+    unit[0].is_active = true;
+    unit[1].x = WIDTH/2;
+    unit[1].y = 90;
+    unit[1].is_active = true;
 }
 int show_lives_selection() {
     tft.fillScreen(TFT_BLACK);
@@ -267,7 +267,6 @@ void engine() {
     */
     if(start == 1) {
         // if we are just starting, display main screen
-        alien_speed = 2;
         chMsgSend(player_thread, start);
         tft.setCursor(35, 100);
         tft.setTextSize(7);
@@ -296,20 +295,16 @@ void engine() {
     else if(start == 0) {
         unit[0].lives = show_lives_selection();
         asset_init();
-        main_screen_init(unit[0].lives);
-        // initialize player and bot structs and positions    
-        unit[0].x = WIDTH/2;
-        unit[0].y = HEIGHT- 85;
-        unit[0].is_active = true;
-        unit[1].x = WIDTH/2;
-        unit[1].y = 85;
-        unit[1].is_active = true;
+        int high_score = 0;
+        main_screen_init(&unit[0], high_score);
         int live_temp_player = unit[0].lives;
         while(start == 0){
             // start player and bot threads
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
             // draw the spaceships for player and bot
+            tft.fillRect(0, 50, WIDTH, 5, TFT_PURPLE);
+            tft.fillRect(0, HEIGHT - 50, WIDTH, 5, TFT_PURPLE);
             for(int i = 0; i < BOT_NUM; i++) {
                 drawSpaceship(&unit[i], SCALE);
             }
@@ -326,7 +321,7 @@ void engine() {
             if(unit[0].is_active) {
                 cast(player_temp, &unit[0]);
             }
-            chMsgRelease(player_thread, (msg_t)&player_temp);
+            chMsgRelease(player_thread, MSG_OK);
             eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
             if(butt_trig) {
                 // if player is firing, fire a bullet from player position
@@ -338,10 +333,11 @@ void engine() {
                     fire_bullet(&unit[1]);
                 }
             } 
-            else {
+            else { 
+                // respawn
                 unit[1].is_active = true;
                 unit[1].x = WIDTH/2;
-                unit[1].y = 85;
+                unit[1].y = 90;
                 unit[1].lives = 3;
             }
             if(!unit[0].is_active) {
@@ -378,8 +374,6 @@ void engine() {
             tft.print("Success!");
             multi_screen_init();   
         }
-   
-        int x_temp_1, x_temp_2;
         while(start == 2) {
             // start player threads
             chMsgSend(player_thread, start);
@@ -390,9 +384,6 @@ void engine() {
             // handle bullets
             bullet_update(&player1, &player2);
             // update player positions
-            x_temp_2 = player2.x;
-            x_temp_1 = player1.x;
-
             chMsgWait();
             // update player1
             player_alien* player_temp = (player_alien*)chMsgGet(player_thread);

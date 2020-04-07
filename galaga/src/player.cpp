@@ -20,7 +20,6 @@ void player_start() {
 }
 
 void player_game() {
-    //butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
     player_alien player;
     player.is_player = true;
     player.is_fire = false;
@@ -43,7 +42,6 @@ void player() {
         chMsgWait();
         msg_t sig = chMsgGet(engine_thread);
         chMsgRelease(engine_thread, sig);
-        
         if(sig == 1) {
             player_start();
         }

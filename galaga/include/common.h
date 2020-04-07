@@ -37,7 +37,7 @@ struct player_alien {
     int y;
     int x_temp = -5;
     int y_temp = -5;
-    int score;
+    uint16_t score = 0;
     bool is_fire = false;
     bool is_player = false;
     bool is_active;

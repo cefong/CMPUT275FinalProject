@@ -23,6 +23,22 @@ static void draw_bullet(bool is_player, int x, int y) {
 
 
 }
+
+
+void drawHeart(int16_t anchorX, int16_t anchorY, int16_t scale, int16_t color = TFT_RED) {
+    // anchor point in upper left corner
+    tft.drawRect(anchorX, anchorY+2*scale, scale, 3*scale, color);
+    tft.drawRect(anchorX+1*scale, anchorY+1*scale, scale, 5*scale, color);
+    tft.drawRect(anchorX+2*scale, anchorY+1*scale, scale, 6*scale, color);
+    tft.drawRect(anchorX+3*scale, anchorY+2*scale, scale, 6*scale, color);
+    tft.drawRect(anchorX+4*scale, anchorY+3*scale, scale, 6*scale, color);
+    tft.drawRect(anchorX+8*scale, anchorY+2*scale, scale, 3*scale, color);
+    tft.drawRect(anchorX+7*scale, anchorY+1*scale, scale, 5*scale, color);
+    tft.drawRect(anchorX+6*scale, anchorY+1*scale, scale, 6*scale, color);
+    tft.drawRect(anchorX+5*scale, anchorY+2*scale, scale, 6*scale, color);   
+}
+
+
 void drawSpaceship(player_alien* player, int16_t scale) {
 	/*
 	Draws the spaceships at player and bot locations
@@ -150,8 +166,7 @@ void fire_bullet(player_alien *player) {
             ammo[i].player = is_player;
             ammo[i].x = x;
             if(is_player) ammo[i].y = y - 2 * BULLET_HEIGHT;
-            else ammo[i].y = y + 2 * BULLET_HEIGHT;
-            
+            else ammo[i].y = y + 2 * BULLET_HEIGHT;            
             break;
         }
     }
@@ -159,10 +174,8 @@ void fire_bullet(player_alien *player) {
 
 
 void drawExplosion(int x, int y, int radius, uint16_t colorBull){
-    tft.drawCircle(x,y , radius, colorBull);
-    tft.fillCircle(x,y , radius, colorBull);
-    tft.drawCircle(x,y , radius, TFT_BLACK);
-    tft.fillCircle(x,y , radius, TFT_BLACK);
+    tft.fillCircle(x, y, radius, colorBull);
+    tft.fillCircle(x, y, radius, TFT_BLACK);
 }
 
 void bullet_update(player_alien *bot, player_alien *player) {
