@@ -1,3 +1,11 @@
+/*
+Names: Claire Martin (1571140), Celine Fong, Minh Dang, Zi Xue Lim
+CMPUT 275, Winter 2020
+
+Final Project: A Variation on 'Galaga'
+main.cpp: Contains setup functions for threads
+*/
+
 #include "main.h"
 
 static THD_WORKING_AREA(waPlayer, 128);

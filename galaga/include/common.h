@@ -1,19 +1,30 @@
+/*
+Names: Claire Martin (1571140), Celine Fong, Minh Dang, Zi Xue Lim
+CMPUT 275, Winter 2020
+
+Final Project: A Variation on 'Galaga'
+common.h: Defines global constants for TFT display and structs for characters
+*/
+
 #ifndef __COMMON_H
 #define __COMMON_H
 
 #include "ChRt.h"
 #include "Arduino.h"
 
+// tft display constants
 #define HEIGHT          480
 #define WIDTH           320
 
+// joystick constants
 #define JOY_CENTER      512
 #define JOY_DEADZONE    64
-
 #define JOY_HORZ        A10
 #define JOY_VERT        A8
 #define BUTT            21
 
+
+// gameplay/design constants
 #define YP              A3
 #define XM              A2
 #define YM              9
@@ -30,45 +41,37 @@
 #define size            7
 #define SCALE           3
 
+// number of bullets and bots
 #define PLAY_NUM_BULLET 100
 #define BOT_NUM         10
 
-// struct loc {
-//     bool is_fire = false;
-//     int x;
-//     int y;
-// };
 
-// as alien moves down the rows, update its y position by like 10 pixels
-// allow x position to move/follow player
-// randomly generate lives when you generate alien
-
+// character struct
 struct player_alien {
-    int lives;
-    int x;
-    int y;
+    int lives; // number of lives
+    int x; // x position
+    int y; // y position
     int x_temp = -5;
     int y_temp = -5;
-    uint32_t score = 0;
-    bool is_fire = false;
-    bool is_player = false;
-    bool is_active;
+    uint32_t score = 0; // score
+    bool is_fire = false; // is it firing
+    bool is_player = false; // is it a player or alien
+    bool is_active; // is it active
 };
 
+// high score struct
 struct high_score {
-    uint32_t rookie;
-    uint32_t intermediate;
-    uint32_t advanced;
+    uint32_t rookie; // rookie high score
+    uint32_t intermediate; // intermediate high score
+    uint32_t advanced; // advanced high score
 };
 
+// bullet struct
 struct bullet {
-    bool active = false;
-    bool player;
-    int x = 0;
-    int y = 0;
+    bool active = false; // is it active
+    bool player; // from player or alien
+    int x = 0; // x position
+    int y = 0; // y position
 };
-
-
-
 
 #endif
