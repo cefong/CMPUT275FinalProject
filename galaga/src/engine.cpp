@@ -184,9 +184,11 @@ void asset_init() {
     unit[0].x = WIDTH/2;
     unit[0].y = HEIGHT- 85;
     unit[0].is_active = true;
+    unit[0].is_player = true;
     unit[1].x = WIDTH/2;
     unit[1].y = 90;
     unit[1].is_active = true;
+    unit[1].lives = 3;
 }
 int show_lives_selection() {
     tft.fillScreen(TFT_BLACK);
@@ -317,11 +319,10 @@ void engine() {
             bullet_update(&unit[1],&unit[0]);
             chMsgWait();
             // update player
-            player_alien* player_temp = (player_alien*)chMsgGet(player_thread);
-            if(unit[0].is_active) {
-                cast(player_temp, &unit[0]);
-            }
+            msg_t stat = chMsgGet(player_thread);
             chMsgRelease(player_thread, MSG_OK);
+            unit[0].x += stat;
+            unit[0].x = constrain(unit[0].x, size*SCALE, WIDTH - size*SCALE);
             eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
             if(butt_trig) {
                 // if player is firing, fire a bullet from player position

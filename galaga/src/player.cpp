@@ -4,7 +4,7 @@ extern thread_t *engine_thread;
 static int x = WIDTH/2;
 static const int y = HEIGHT - 85;
 
-void player_start() {
+void player_vert() {
     msg_t stat = 0;
     int yVal = analogRead(JOY_VERT);
     if(yVal < JOY_CENTER - JOY_DEADZONE) {
@@ -19,22 +19,17 @@ void player_start() {
     chMsgSend(engine_thread, stat);
 }
 
-void player_game() {
-    player_alien player;
-    player.is_player = true;
-    player.is_fire = false;
+void player_horz() {
+    msg_t stat = 0;
     int xVal = analogRead(JOY_HORZ);
     
     if(xVal < JOY_CENTER - JOY_DEADZONE) {
-        x -= speed;
+        stat = -speed;
     }
     else if(xVal > JOY_CENTER + JOY_DEADZONE) {
-        x += speed;
+        stat = speed;
     }
-    x = constrain(x, size*SCALE, WIDTH - size*SCALE);
-    player.x = x;
-    player.y = y;   
-    chMsgSend(engine_thread, (msg_t)&player);
+    chMsgSend(engine_thread, stat);
 }
 
 void player() {
@@ -43,10 +38,10 @@ void player() {
         msg_t sig = chMsgGet(engine_thread);
         chMsgRelease(engine_thread, sig);
         if(sig == 1) {
-            player_start();
+            player_vert();
         }
         else {
-            player_game();
+            player_horz();
         }
     }
 

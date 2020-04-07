@@ -14,7 +14,7 @@
 #define JOY_VERT        A8
 #define BUTT            21
 
-#define speed           4
+#define speed           5
 #define size            7
 #define SCALE           3
 
