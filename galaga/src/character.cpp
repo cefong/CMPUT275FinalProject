@@ -261,7 +261,7 @@ void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score)
 			            	tft.setCursor(200, 30);
             				tft.print(player->score);
 							if(player->score > high_score) {
-								tft.setCursor(200, 30);
+								tft.setCursor(10, 30);
             					tft.print(player->score);
 							}
                         }
