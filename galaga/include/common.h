@@ -37,10 +37,16 @@ struct player_alien {
     int y;
     int x_temp = -5;
     int y_temp = -5;
-    uint16_t score = 0;
+    uint32_t score = 0;
     bool is_fire = false;
     bool is_player = false;
     bool is_active;
+};
+
+struct high_score {
+    uint32_t rookie;
+    uint32_t intermediate;
+    uint32_t advanced;
 };
 
 struct bullet {

@@ -19,15 +19,15 @@ void player_vert() {
     chMsgSend(engine_thread, stat);
 }
 
-void player_horz() {
+void player_horz(int speed_horz) {
     msg_t stat = 0;
     int xVal = analogRead(JOY_HORZ);
     
     if(xVal < JOY_CENTER - JOY_DEADZONE) {
-        stat = -speed;
+        stat = -speed_horz;
     }
     else if(xVal > JOY_CENTER + JOY_DEADZONE) {
-        stat = speed;
+        stat = speed_horz;
     }
     chMsgSend(engine_thread, stat);
 }
@@ -41,7 +41,8 @@ void player() {
             player_vert();
         }
         else {
-            player_horz();
+            if(sig == 0) player_horz(speed);
+            else if(sig == 3) player_horz(1);
         }
     }
 
