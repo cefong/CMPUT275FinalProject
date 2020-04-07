@@ -3,6 +3,7 @@
 #include "multiplayer.h"
 extern bullet ammo[PLAY_NUM_BULLET];
 player_alien unit[BOT_NUM];
+extern int alien_speed;
 
 // define structs and initial variables
 static int start = 1;
@@ -266,6 +267,7 @@ void engine() {
     */
     if(start == 1) {
         // if we are just starting, display main screen
+        alien_speed = 2;
         chMsgSend(player_thread, start);
         tft.setCursor(35, 100);
         tft.setTextSize(7);
