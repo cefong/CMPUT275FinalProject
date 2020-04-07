@@ -356,11 +356,15 @@ void asset_init() {
     // reset player position and reactivate it
     unit[0].x = WIDTH/2;
     unit[0].y = HEIGHT- 85;
+    unit[0].x_temp = WIDTH/2;
+    unit[0].y_temp = HEIGHT- 85;
     unit[0].is_active = true;
     unit[0].is_player = true;
     // reset alien position and reactivate it
     unit[1].x = WIDTH/2;
     unit[1].y = 90;
+    unit[0].x_temp = WIDTH/2;
+    unit[0].y_temp = 90;
     unit[1].is_active = true;
     unit[1].is_player = false;
     unit[1].lives = 3;
@@ -474,7 +478,6 @@ void engine() {
         chMsgWait();
         msg_t mess = chMsgGet(player_thread);
         selection -= mess;
-
         // constrain joystick selections
         if(selection > 2) selection = 0;
         else if(selection < 0) selection = 2;
@@ -504,7 +507,6 @@ void engine() {
         uint32_t high_score = high_score_init(unit[0].lives);
         main_screen_init(&unit[0], high_score);
         int live_temp_player = unit[0].lives;
-
         // loop while game is still in play (player is alive)
         while(start == 0){
             int16_t touch_x = 0, touch_y = 0;
@@ -518,19 +520,13 @@ void engine() {
             // draw spaceships for player and alien
             drawSpaceship(&unit[0], SCALE);
             drawSpaceship(&unit[1], SCALE);
-            if(high_score < unit[0].score) {
-                tft.setTextColor(TFT_WHITE, TFT_BLACK);
-                tft.setCursor(10, 30);
-                tft.setTextSize(2);
-                tft.print(unit[0].score);
-            }
             // update player lives
             if(live_temp_player != unit[0].lives) {
                 live_temp_player = unit[0].lives;
                 update_health(live_temp_player);
             }
             // handle bullets      
-            bullet_update(&unit[1],&unit[0]);
+            bullet_update(&unit[1],&unit[0], high_score);
             chMsgWait();
 
             // update player
@@ -611,7 +607,7 @@ void engine() {
             drawSpaceship(&player1, SCALE);
             drawSpaceship(&player2, SCALE);
             // handle bullets
-            bullet_update(&player1, &player2);
+            bullet_update(&player1, &player2,1);
             // update player positions
             chMsgWait();
             // update player1

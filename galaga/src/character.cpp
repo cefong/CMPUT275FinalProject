@@ -217,7 +217,7 @@ void drawExplosion(int x, int y, int radius, uint16_t colorBull){
 }
 
 
-void bullet_update(player_alien *bot, player_alien *player) {
+void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score) {
 	/*
 	Updates bullet positions for bots and players.
 
@@ -260,6 +260,10 @@ void bullet_update(player_alien *bot, player_alien *player) {
 							player -> score += 100;
 			            	tft.setCursor(200, 30);
             				tft.print(player->score);
+							if(player->score > high_score) {
+								tft.setCursor(200, 30);
+            					tft.print(player->score);
+							}
                         }
                 	}
                 }

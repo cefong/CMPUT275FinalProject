@@ -50,7 +50,7 @@ character.h: Defines global constants and functions for character/bullet design
 extern MCUFRIEND_kbv tft;
 
 void fire_bullet(player_alien *player);
-void bullet_update(player_alien *bot, player_alien *player);
+void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score);
 void drawSpaceship(player_alien* player, int16_t scale);
 void drawHeart(int16_t anchorX, int16_t anchorY, int16_t scale, int16_t color = TFT_RED);
 
