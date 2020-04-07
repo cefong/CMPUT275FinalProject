@@ -12,6 +12,8 @@ engine.cpp: Main engine thread, controls organization of game
 #include "high_score.h"
 
 // define structs and initial variables
+#include <TouchScreen.h>
+
 extern bullet ammo[PLAY_NUM_BULLET];
 player_alien unit[BOT_NUM];
 extern int alien_speed;
@@ -20,6 +22,18 @@ extern int time_delay_jump;
 extern int time_delay_speed;
 static int start = 1;
 static int selection = 0;
+
+TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
+
+static void processTouchScreen(int16_t *screen_x, int16_t *screen_y) {
+    TSPoint touch  = ts.getPoint();
+    pinMode(YP, OUTPUT);
+    pinMode(XM, OUTPUT);
+    if(touch.z < MINPRESSURE || touch.z > MAXPRESSURE) return;
+    *screen_x = map(touch.y, TS_MINX, TS_MAXX, HEIGHT - 1, 0);
+    *screen_y = map(touch.x, TS_MINY, TS_MAXY, WIDTH - 1, 0);
+    chThdSleepMilliseconds(5);
+}
 
 
 static void update_health(int lives) {
@@ -493,6 +507,7 @@ void engine() {
 
         // loop while game is still in play (player is alive)
         while(start == 0){
+            int16_t touch_x = 0, touch_y = 0;
             // start player and bot threads
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
@@ -503,7 +518,12 @@ void engine() {
             // draw spaceships for player and alien
             drawSpaceship(&unit[0], SCALE);
             drawSpaceship(&unit[1], SCALE);
-
+            if(high_score < unit[0].score) {
+                tft.setTextColor(TFT_WHITE, TFT_BLACK);
+                tft.setCursor(10, 30);
+                tft.setTextSize(2);
+                tft.print(unit[0].score);
+            }
             // update player lives
             if(live_temp_player != unit[0].lives) {
                 live_temp_player = unit[0].lives;
@@ -542,9 +562,14 @@ void engine() {
                 unit[1].y = 90;
                 unit[1].lives = 3;
             }
+            processTouchScreen(&touch_x, &touch_y);
+            if(touch_y >= 0 && touch_y <= WIDTH - 170 && touch_x >= HEIGHT - 50 && touch_x <= HEIGHT) {
+                tft.fillScreen(TFT_BLACK);
+                endScreen(unit[0].score, high_score, mode);
 
-            if(!unit[0].is_active) {
-                // if player died, display game over screen
+            }
+            else if(!unit[0].is_active) {
+              // if player died, display game over screen
                 tft.fillScreen(TFT_BLACK);
                 endScreen(unit[0].score, high_score, mode);
             }

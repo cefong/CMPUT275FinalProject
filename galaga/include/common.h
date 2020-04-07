@@ -23,7 +23,20 @@ common.h: Defines global constants for TFT display and structs for characters
 #define JOY_VERT        A8
 #define BUTT            21
 
+
 // gameplay/design constants
+#define YP              A3
+#define XM              A2
+#define YM              9
+#define XP              8
+
+#define TS_MINX         100
+#define TS_MINY         120
+#define TS_MAXX         940
+#define TS_MAXY         920
+#define MINPRESSURE     10
+#define MAXPRESSURE     1000
+
 #define speed           5
 #define size            7
 #define SCALE           3
