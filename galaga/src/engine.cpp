@@ -3,6 +3,7 @@
 #include "multiplayer.h"
 extern bullet ammo[PLAY_NUM_BULLET];
 player_alien unit[BOT_NUM];
+extern int alien_speed;
 
 // define structs and initial variables
 static int start = 1;
@@ -101,6 +102,45 @@ static bool multiplayer_init() {
     else {
         return 0;
     }
+}
+void endScreen(int currentScore,int highScore){
+    while(start != 1) {
+        chThdSleepMilliseconds(100);
+        eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
+        tft.setCursor(35, 100);
+        tft.setTextSize(7);
+        tft.setTextColor(TFT_RED);
+        tft.print("GALAGA");
+        tft.setTextSize(5);
+        tft.setTextColor(TFT_WHITE);
+        tft.setCursor(30,200);
+        tft.print("GAME OVER");
+        if(currentScore > highScore){
+            tft.setCursor(35,250);
+            tft.setTextSize(3);
+            tft.print("NEW HIGH SCORE");
+        }
+        tft.setCursor(35,300);
+        tft.setTextSize(2);
+        tft.print("Current High Score: ");
+        if(currentScore > highScore){
+            tft.print(currentScore);
+        }else{
+        tft.print(highScore); // change this to hi-score
+        }
+        tft.setCursor(35,350);
+        tft.print("Your Score: ");
+        tft.print(currentScore);
+        tft.setCursor(35,380);
+        tft.setTextSize(3);
+        tft.setTextColor(TFT_BLACK,TFT_WHITE);
+        tft.print("Return To Menu");
+        if(butt_trig == 1) {
+            start = 1;
+            tft.fillScreen(TFT_BLACK);
+        } 
+    }
+
 }
 
 void show_selection() {
@@ -224,52 +264,14 @@ void cast(player_alien* player1, player_alien* player2) {
     player2->is_player = player1->is_player;
 }
 
-void endScreen(int currentScore, int newHighScore,int highScore){
-    
-   tft.fillScreen(TFT_BLACK);
-   tft.setCursor(35, 100);
-        tft.setTextSize(7);
-        tft.setTextColor(TFT_RED);
-   tft.print("GALAGA");
-   tft.setTextSize(5);
-   tft.setTextColor(TFT_WHITE);
-   tft.setCursor(30,200);
-   tft.print("GAME OVER");
-   if(newHighScore ==1){
-    tft.setCursor(35,250);
-    tft.setTextSize(3);
-    tft.print("NEW HIGH SCORE");
-   }
-   tft.setCursor(35,280);
-   tft.setTextSize(2);
-   tft.print("Current High Score: ");
-    tft.print(highScore); // change this to hi-score
-    tft.setCursor(35,330);
-   tft.print("Your Score: ");
-   tft.print(currentScore);
-   tft.setCursor(35,380);
-   tft.setTextSize(3);
-   tft.setTextColor(TFT_BLACK,TFT_WHITE);
-   tft.print("Return To Menue");
-//    eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
-//    if(butt_trig) {
-//         engine();
-//     } 
-}
 
 void engine() {
     /*
     Runs main engine thread, calls and controls other threads
     */
-   int highScoreOne =0; // high score for easy
-   int highScoreTwo =0; // high score for intermediate
-   int highScoreThree =0; // high score for hard
-   int difficulty; // store the difficulty 
-   while(1){
-    int endGame = 0; // check if game over
-    int currentScore = 0; // store current game score 
     if(start == 1) {
         // if we are just starting, display main screen
+        alien_speed = 2;
         chMsgSend(player_thread, start);
         tft.setCursor(35, 100);
         tft.setTextSize(7);
@@ -297,8 +299,6 @@ void engine() {
     }
     else if(start == 0) {
         unit[0].lives = show_lives_selection();
-        difficulty = unit[0].lives;
-        unit[0].score =0;
         asset_init();
         main_screen_init(unit[0].lives);
         // initialize player and bot structs and positions    
@@ -309,8 +309,7 @@ void engine() {
         unit[1].y = 85;
         unit[1].is_active = true;
         int live_temp_player = unit[0].lives;
-        
-        while(start == 0 & endGame ==0){
+        while(start == 0){
             // start player and bot threads
             chMsgSend(player_thread, start);
             chMsgSend(bot_thread, start);
@@ -325,10 +324,6 @@ void engine() {
             }
             // handle bullets      
             bullet_update(&unit[1],&unit[0]);
-            if((unit[0].lives) == 0){
-                endGame = 1;
-                currentScore = unit[0].score;
-            }
             chMsgWait();
             // update player
             player_alien* player_temp = (player_alien*)chMsgGet(player_thread);
@@ -336,7 +331,8 @@ void engine() {
                 cast(player_temp, &unit[0]);
             }
             chMsgRelease(player_thread, (msg_t)&player_temp);
-            if(unit[0].is_fire) {
+            eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
+            if(butt_trig) {
                 // if player is firing, fire a bullet from player position
                 fire_bullet(&unit[0]);
             }
@@ -345,11 +341,16 @@ void engine() {
                     // if bot is firing, fire a bullet from alien position
                     fire_bullet(&unit[1]);
                 }
-            } else {
+            } 
+            else {
                 unit[1].is_active = true;
                 unit[1].x = WIDTH/2;
                 unit[1].y = 85;
                 unit[1].lives = 3;
+            }
+            if(!unit[0].is_active) {
+                tft.fillScreen(TFT_BLACK);
+                endScreen(unit[0].score, 0);
             }
         }
     }
@@ -417,37 +418,4 @@ void engine() {
             }
         }
     }
-    if(endGame == 1){ // no implmentation of highschore yet 
-        bool newHighScore =0 ; // changes if hiscore reached
-        if(difficulty == 5){  //easiest level
-            if(highScoreOne <currentScore){
-                highScoreOne = currentScore;
-                newHighScore =1;
-            }
-            endScreen(currentScore,newHighScore,highScoreOne);
-        }
-        if(difficulty == 3){ //middle level
-            if(highScoreTwo <currentScore){
-                highScoreTwo = currentScore;
-                newHighScore =1;
-            }
-            endScreen(currentScore,newHighScore,highScoreTwo);
-        }
-        if(difficulty == 1){ //hardest level
-            if(highScoreThree <currentScore){
-                highScoreThree = currentScore;
-                newHighScore =1;
-            }
-             endScreen(currentScore,newHighScore,highScoreThree);
-        }
-        int buttonVal = digitalRead(21);
-        while(buttonVal == 1){ 
-            buttonVal = digitalRead(21);
-        }
-        start =1;
-        tft.fillScreen(TFT_BLACK);
-
-        
-    }
-   }
 }

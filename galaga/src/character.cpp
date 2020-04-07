@@ -175,6 +175,7 @@ void bullet_update(player_alien *bot, player_alien *player) {
             }
             else {
                 if(ammo[i].player) {
+					// if bullet was fired from player
                     ammo[i].y -= BULLET_HEIGHT;
                     tft.setTextColor(TFT_RED);
                     if((((bot->x)+15) >= ammo[i].x) && (((bot->x)-15) <= ammo[i].x)  && (((bot->y)+15) >= ammo[i].y) && (((bot->y)-15) <= ammo[i].y) && bot->is_active ){
@@ -205,7 +206,7 @@ void bullet_update(player_alien *bot, player_alien *player) {
 						tft.fillRect(10+(player->lives)*30, HEIGHT-20, 18, 18, TFT_BLACK);
                         if((player -> lives) == 0){ // do something when the player dies.
                             drawExplosion(player->x,player->y , 29, TFT_RED); // make sure game over
-							// player -> is_active = false;
+							player -> is_active = false;
 							// exit out of game, display score and display option to return to main screen
                         }
                 	}
