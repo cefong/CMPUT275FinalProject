@@ -1,3 +1,11 @@
+/*
+Names: Claire Martin (1571140), Celine Fong, Minh Dang, Zi Xue Lim
+CMPUT 275, Winter 2020
+
+Final Project: A Variation on 'Galaga'
+main.cpp: Contains setup functions for threads
+*/
+
 #include "main.h"
 
 static THD_WORKING_AREA(waPlayer, 128);
@@ -33,7 +41,6 @@ void interruptHandler() {
   // set a flag to signal Engine Thread
   CH_IRQ_PROLOGUE();
   chSysLockFromISR();
-  chEvtSignalI(player_thread, 1);
   chEvtSignalI(engine_thread, 1);
   chSysUnlockFromISR();
   CH_IRQ_EPILOGUE();
