@@ -18,6 +18,7 @@ engine.h: Header for engine.cpp, links to other threads
 extern thread_t *engine_thread;
 extern thread_t *player_thread;
 extern thread_t *bot_thread;
+extern thread_t *bot2_thread;
 
 // include tft display
 extern MCUFRIEND_kbv tft;

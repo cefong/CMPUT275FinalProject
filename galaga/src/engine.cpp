@@ -305,6 +305,14 @@ static void asset_init() {
     unit[1].is_active = true;
     unit[1].is_player = false;
     unit[1].lives = 3;
+    
+    unit[2].x = WIDTH/2;
+    unit[2].y = 90;
+    unit[2].x_temp = WIDTH/2;
+    unit[2].y_temp = 90;
+    unit[2].is_active = true;
+    unit[2].is_player = false;
+    unit[2].lives = 3;
 }
 
 static int show_lives_selection() {
@@ -427,6 +435,7 @@ static void singleplayer() {
         // start player and bot threads
         chMsgSend(player_thread, start);
         chMsgSend(bot_thread, start);
+        chMsgSend(bot2_thread, start);
 
         // draw the purple lines for edge of playing area
         tft.fillRect(0, 50, WIDTH, 5, TFT_PURPLE);
@@ -434,8 +443,10 @@ static void singleplayer() {
         // draw spaceships for player and alien
         drawSpaceship(&unit[0], SCALE);
         drawSpaceship(&unit[1], SCALE);
+        drawSpaceship(&unit[2], SCALE);
         // handle bullets      
         bullet_update(&unit[1],&unit[0], high_score);
+        bullet_update(&unit[2],&unit[0], high_score);
         chMsgWait();
         // update player
         msg_t stat = chMsgGet(player_thread);
@@ -452,6 +463,20 @@ static void singleplayer() {
             fire_bullet(&unit[0]);
         }
 
+        if(unit[2].is_active) {
+            // if bot is alive
+            if(unit[2].is_fire) {
+                // if bot is firing, fire a bullet from bot position
+                fire_bullet(&unit[2]);
+            }
+        } 
+        else { 
+            // respawn
+            unit[2].is_active = true;
+            unit[2].x = WIDTH/2;
+            unit[2].y = 90;
+            unit[2].lives = 3;
+        }
         if(unit[1].is_active) {
             // if bot is alive
             if(unit[1].is_fire) {

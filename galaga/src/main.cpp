@@ -19,6 +19,11 @@ static THD_FUNCTION(Bot, arg) {
   (void)arg;
   bot();
 }
+static THD_WORKING_AREA(waBot2, 1024);
+static THD_FUNCTION(Bot2, arg) {
+  (void)arg;
+  bot2();
+}
 
 static THD_WORKING_AREA(waEngine, 1024);
 static THD_FUNCTION(Engine, arg) {
@@ -45,6 +50,7 @@ void chSetup() {
   player_thread  = chThdCreateStatic(waPlayer, sizeof(waPlayer), NORMALPRIO, Player, NULL);
   engine_thread  = chThdCreateStatic(waEngine, sizeof(waEngine), NORMALPRIO + 1, Engine, NULL);
   bot_thread     = chThdCreateStatic(waBot, sizeof(waBot), NORMALPRIO, Bot, NULL);
+  bot2_thread    = chThdCreateStatic(waBot2, sizeof(waBot2), NORMALPRIO, Bot2, NULL);
 }
 
 void setup() {

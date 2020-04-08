@@ -37,12 +37,12 @@ common.h: Defines global constants for TFT display and structs for characters
 #define MINPRESSURE     10
 #define MAXPRESSURE     1000
 
-#define speed           5
+#define speed           7
 #define size            7
 #define SCALE           3
 
 // number of bullets and bots
-#define PLAY_NUM_BULLET 20
+#define PLAY_NUM_BULLET 100
 #define BOT_NUM         10
 
 

@@ -22,6 +22,7 @@ main.h: Includes all necessary libraries as well as linking all threads together
 thread_t *player_thread;
 thread_t *engine_thread;
 thread_t *bot_thread;
+thread_t *bot2_thread;
 
 // include tft display
 MCUFRIEND_kbv tft;

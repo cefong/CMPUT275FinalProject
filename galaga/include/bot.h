@@ -15,5 +15,6 @@ bot.h: Links engine thread to bot thread
 // include engine thread
 extern thread_t *engine_thread;
 void bot();
+void bot2();
 
 #endif
