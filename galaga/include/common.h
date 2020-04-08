@@ -18,7 +18,7 @@
 #define size            7
 #define SCALE           3
 
-#define PLAY_NUM_BULLET 100
+#define PLAY_NUM_BULLET 20
 #define BOT_NUM         10
 
 // struct loc {
@@ -41,6 +41,7 @@ struct player_alien {
     bool is_fire = false;
     bool is_player = false;
     bool is_active;
+    int bullets = 10;
 };
 
 struct bullet {
