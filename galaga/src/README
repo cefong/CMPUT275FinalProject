@@ -101,6 +101,8 @@ Minh:
  *High scores/storing on Arduino permanent memory
  *Design of bullet struct
  *Design of main screen
+ *Low Level Hardware Programming(EEPROM and Interrupt)
+ *Engine handler
 Celine:
  *Graphics and UI/UX
  *Alien/Player designs using bitmap images

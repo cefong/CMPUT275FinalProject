@@ -47,7 +47,8 @@ void bot() {
             if(unit->is_active) {
                 // get end time for bullet
                 timestamp_end_b = chVTGetSystemTime();
-                if(unit[1].x <= unit[0].x + 15 && unit[1].x >= unit[0].x - 15 && timestamp_end_b - timestamp_start_b >= TIME_MS2I(time_delay_bullet)) {
+                if(unit[1].x <= unit[0].x + 15 && unit[1].x >= unit[0].x - 15 
+                    && timestamp_end_b - timestamp_start_b >= TIME_MS2I(time_delay_bullet)) {
                     // fire bullet when in line with player and if time delay has passed
                     unit[1].is_fire = true;
                     // restart bullet time

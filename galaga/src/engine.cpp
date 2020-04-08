@@ -261,7 +261,7 @@ static void endScreen(int currentScore, int highScore, int mode){
         tft.setCursor(35,380);
         tft.setTextSize(3);
         tft.setTextColor(TFT_BLACK,TFT_WHITE);
-        tft.print("Return To Menu");
+        tft.print("RETURN TO MENU");
         if(butt_trig == 1) {
             // return when player presses joystick button
             start = 1;
@@ -363,8 +363,8 @@ void asset_init() {
     // reset alien position and reactivate it
     unit[1].x = WIDTH/2;
     unit[1].y = 90;
-    unit[0].x_temp = WIDTH/2;
-    unit[0].y_temp = 90;
+    unit[1].x_temp = WIDTH/2;
+    unit[1].y_temp = 90;
     unit[1].is_active = true;
     unit[1].is_player = false;
     unit[1].lives = 3;
