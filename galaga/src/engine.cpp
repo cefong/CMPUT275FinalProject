@@ -420,7 +420,7 @@ static void singleplayer() {
     asset_init();
     uint32_t high_score = high_score_init(unit[0].lives);
     main_screen_init(&unit[0], high_score);
-    int live_temp_player = unit[0].lives;
+    //int live_temp_player = unit[0].lives;
     // loop while game is still in play (player is alive)
     while(start == 0){
         int16_t touch_x = 0, touch_y = 0;
@@ -434,15 +434,9 @@ static void singleplayer() {
         // draw spaceships for player and alien
         drawSpaceship(&unit[0], SCALE);
         drawSpaceship(&unit[1], SCALE);
-        // update player lives
-        if(live_temp_player != unit[0].lives) {
-            live_temp_player = unit[0].lives;
-            update_health(live_temp_player);
-        }
         // handle bullets      
         bullet_update(&unit[1],&unit[0], high_score);
         chMsgWait();
-
         // update player
         msg_t stat = chMsgGet(player_thread);
         chMsgRelease(player_thread, MSG_OK);
