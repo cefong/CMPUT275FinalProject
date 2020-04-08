@@ -8,7 +8,6 @@ engine.cpp: Main engine thread, controls organization of game
 
 #include "engine.h"
 #include "character.h"
-//#include "multiplayer.h"
 #include "high_score.h"
 
 // define structs and initial variables
@@ -89,16 +88,6 @@ static void main_screen_init(player_alien* player, int highscore) {
     tft.setCursor(192, HEIGHT - 28);
     tft.print("MAIN MENU");
 }
-
-// for multiplayer
-// static void multi_screen_init() {
-//     // initialize basic screen
-//     tft.fillScreen(TFT_BLACK);
-//     tft.fillRect(0, 50, WIDTH, 5, TFT_PURPLE);
-//     tft.fillRect(0, HEIGHT - 50, WIDTH, 5, TFT_PURPLE);
-
-// }
-
 
 static void high_score_show() {
     /*
@@ -186,31 +175,6 @@ static void high_score_show() {
         }
     }
 }
-
-
-// multiplayer initialization
-// static bool multiplayer_init() {
-//     /*
-//     Initialize serial communication for multiplayer
-//     */
-//     Serial.end();
-//     Serial.begin(9600);
-//     Serial.println("R");
-//     if(wait_timeout(1,500)) {
-//         char r = Serial.read();
-//         if(r == 'A') {
-//             Serial.println("A");
-//             return 1;
-//         }
-//         else {
-//             return 0;
-//         }
-//     }
-//     else {
-//         return 0;
-//     }
-// }
-
 
 static void endScreen(int currentScore, int highScore, int mode){
     /*
@@ -301,9 +265,6 @@ static void show_selection() {
             tft.print("PLAY");
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
             tft.setCursor(65, 240);
-            // tft.print("MULTIPLAYER");
-            // tft.setTextColor(TFT_WHITE, TFT_BLACK);
-            // tft.setCursor(65, 280);
             tft.print("HIGH SCORE");
             break;
         case 1:
@@ -312,22 +273,8 @@ static void show_selection() {
             tft.print("PLAY");
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
             tft.setCursor(65, 240);
-            // tft.print("MULTIPLAYER");
-            // tft.setTextColor(TFT_WHITE, TFT_BLACK);
-            // tft.setCursor(65, 280);
             tft.print("HIGH SCORE");
             break;
-        // case 2:
-        // tft.setTextColor(TFT_WHITE, TFT_BLACK);
-        // tft.setCursor(110, 200);
-        // tft.print("PLAY");
-        // tft.setTextColor(TFT_WHITE, TFT_BLACK);
-        // tft.setCursor(65, 240);
-        // tft.print("MULTIPLAYER");
-        // tft.setTextColor(TFT_BLACK, TFT_WHITE);
-        // tft.setCursor(65, 280);
-        // tft.print("HIGH SCORE");
-        // break;
     }
 }
 
@@ -550,22 +497,6 @@ static void singleplayer() {
     }
 }
 
-// void cast(player_alien* player1, player_alien* player2) {
-//     /*
-//     Casts character info from player/bot thread to character info in engine thread. This saves
-//     time and lines of code instead of having to do this every single time.
-
-//     PARAMETERS:
-//         player1: character info from thread
-//         player2: character info in engine thread
-//     */
-//     player2->x = player1->x;
-//     player2->y = player1->y;
-//     player2->is_fire = player1->is_fire;
-//     player2->is_player = player1->is_player;
-// }
-
-
 void engine() {
     /*
     Runs main engine thread, calls and controls other threads
@@ -576,65 +507,6 @@ void engine() {
     else if(start == 0) {
         singleplayer();
     }
-    // else if(start == 2) {
-    //     // multiplayer
-    //     tft.fillScreen(TFT_BLACK);
-    //     player_alien player1;
-    //     player_alien player2;
-    //     while(!multiplayer_init()) {
-    //         tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    //         tft.setCursor(30, 200);
-    //         tft.setTextSize(2);
-    //         tft.print("Waiting to connect...");
-    //         eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
-    //         if(butt_trig) {
-    //             // if connection is not successful, go back to main screen
-    //             start = 1;
-    //             tft.fillScreen(TFT_BLACK);
-    //             break;
-    //         }
-    //     }
-    //     if(start == 2) {
-    //         tft.setTextColor(TFT_BLACK, TFT_BLACK);
-    //         tft.setCursor(30, 200);
-    //         tft.setTextSize(2);
-    //         tft.print("Waiting to connect...");
-    //         tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    //         tft.setCursor(100, 200);
-    //         tft.print("Success!");
-    //         multi_screen_init();   
-    //     }
-    //     while(start == 2) {
-    //         // start player threads
-    //         chMsgSend(player_thread, start);
-    //         chMsgSend(player2_thread, start);
-    //         // draw Spaceships are player positions
-    //         drawSpaceship(&player1, SCALE);
-    //         drawSpaceship(&player2, SCALE);
-    //         // handle bullets
-    //         bullet_update(&player1, &player2,1);
-    //         // update player positions
-    //         chMsgWait();
-    //         // update player1
-    //         player_alien* player_temp = (player_alien*)chMsgGet(player_thread);
-    //         cast(player_temp, &player1);
-    //         chMsgRelease(player_thread, (msg_t)&player_temp);
-    //         chMsgWait();
-    //         // update player2
-    //         player_temp = (player_alien*)chMsgGet(player2_thread);
-    //         cast(player_temp, &player2);
-    //         chMsgRelease(player2_thread, (msg_t)&player_temp);
-
-    //         if(player1.is_fire) {
-    //             // if player1 is firing, fire a bullet from player1 position
-    //             fire_bullet(&player1);
-    //         }
-    //         if(player2.is_fire) {
-    //             // if player2 is firing, fire a bullet from player2 position
-    //             fire_bullet(&player2);
-    //         }
-    //     }
-    // }
     else if(start == 3) {
         // if player chose high score
         high_score_show();
