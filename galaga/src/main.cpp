@@ -20,7 +20,7 @@ static THD_FUNCTION(Bot, arg) {
   bot();
 }
 
-static THD_WORKING_AREA(waEngine, 2048);
+static THD_WORKING_AREA(waEngine, 1024);
 static THD_FUNCTION(Engine, arg) {
   (void)arg;
   uint16_t ID = tft.readID();

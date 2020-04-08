@@ -334,22 +334,6 @@ void drawExplosion(int16_t anchorX, int16_t anchorY, int16_t scale) {
 	tft.drawRect(anchorX, anchorY+1*scale, scale, scale, color4);
 }
 
-/*
-void drawExplosion(int x, int y, int radius, uint16_t colorBull){
-	/*
-	Draws an explosion surrounding a chosen character
-
-	PARAMETERS:
-		x: x position of character
-		y: y position of character
-		radius: radius of circle
-		colourBull: colour of explosion (depends on character type)
-    */
-    tft.fillCircle(x, y, radius, colorBull);
-    tft.fillCircle(x, y, radius, TFT_BLACK);
-}
-*/
-
 
 void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score) {
 	/*
@@ -391,6 +375,9 @@ void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score)
 							player -> score += 100;
 			            	tft.setCursor(200, 30);
             				tft.print(player->score);
+							if(player->score > high_score) {
+								
+							}
                         }
                 	}
                 }

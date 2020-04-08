@@ -160,15 +160,8 @@ static void high_score_show() {
         }
         else if (butt_trig && selection == 1) {
             // if selected clear
-            tft.setTextSize(3);
-            tft.setTextColor(TFT_CYAN, TFT_BLACK);
-            tft.setCursor(40, 350);
-            tft.print("Waiting...");
             high_score_clear();
             high_score_get(&temp);
-            tft.setTextColor(TFT_BLACK, TFT_BLACK);
-            tft.setCursor(40, 350);
-            tft.print("Waiting...");
             tft.fillRect(0, 140, WIDTH, 90, TFT_BLACK);
         }
     }
@@ -190,7 +183,7 @@ static void endScreen(int currentScore, int highScore, int mode){
     
     while(start != 1) {
         // continue while player has not chosen to go back to main
-        chThdSleepMilliseconds(100);
+        chThdSleepMilliseconds(10);
         eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
 
         // print "GALAGA" and "GAME OVER"
@@ -317,12 +310,12 @@ static void asset_init() {
 static int show_lives_selection() {
     tft.fillScreen(TFT_BLACK);
     int lives_select = 0;
+    tft.setCursor(35, 100);
+    tft.setTextSize(7);
+    tft.setTextColor(TFT_RED);
+    tft.print("GALAGA");
     while(1) {
-        tft.setCursor(35, 100);
-        tft.setTextSize(7);
-        tft.setTextColor(TFT_RED);
-        tft.print("GALAGA");
-        tft.setTextSize(5);
+        tft.setTextSize(3);
         chMsgSend(player_thread, 1);
         chMsgWait();
         msg_t mess = chMsgGet(player_thread);
@@ -337,7 +330,6 @@ static int show_lives_selection() {
         switch(lives_select){
             // toggle between lives selection
             case 0:
-            tft.setTextSize(3);
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
             tft.setCursor(105, 200);
             tft.print("ROOKIE");
