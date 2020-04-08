@@ -42,7 +42,7 @@ common.h: Defines global constants for TFT display and structs for characters
 #define SCALE           3
 
 // number of bullets and bots
-#define PLAY_NUM_BULLET 100
+#define PLAY_NUM_BULLET 20
 #define BOT_NUM         10
 
 
@@ -53,10 +53,11 @@ struct player_alien {
     int y; // y position
     int x_temp = -5;
     int y_temp = -5;
-    uint32_t score = 0; // score
-    bool is_fire = false; // is it firing
-    bool is_player = false; // is it a player or alien
-    bool is_active; // is it active
+    uint16_t score = 0;
+    bool is_fire = false;
+    bool is_player = false;
+    bool is_active;
+    int bullets = 10;
 };
 
 // high score struct

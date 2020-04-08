@@ -77,12 +77,10 @@ static void main_screen_init(player_alien* player, int highscore) {
     tft.print("SCORE");
     tft.setCursor(200, 30);
     tft.print(player->score);
-
     // display number of lives (5, 3 or 1)
     tft.setCursor(10, HEIGHT - 40);
     tft.print("LIVES");
     update_health(player->lives);
-
     // main menu button
     tft.fillRect(170, HEIGHT - 50, 2, 50, TFT_PURPLE);
     tft.setCursor(192, HEIGHT - 28);
@@ -316,17 +314,15 @@ static void asset_init() {
     unit[1].lives = 3;
 }
 
-
 static int show_lives_selection() {
-    /*
-    Shows the level selection screen.
-    */
-
     tft.fillScreen(TFT_BLACK);
     int lives_select = 0;
     while(1) {
-        // keep looping until player makes a selection
-        // start player thread
+        tft.setCursor(35, 100);
+        tft.setTextSize(7);
+        tft.setTextColor(TFT_RED);
+        tft.print("GALAGA");
+        tft.setTextSize(5);
         chMsgSend(player_thread, 1);
         chMsgWait();
         msg_t mess = chMsgGet(player_thread);
@@ -341,38 +337,39 @@ static int show_lives_selection() {
         switch(lives_select){
             // toggle between lives selection
             case 0:
-                tft.setTextColor(TFT_BLACK, TFT_WHITE);
-                tft.setCursor(110, 200);
-                tft.print("ROOKIE");
-                tft.setTextColor(TFT_WHITE, TFT_BLACK);
-                tft.setCursor(50, 240);
-                tft.print("INTERMEDIATE");
-                tft.setTextColor(TFT_WHITE, TFT_BLACK);
-                tft.setCursor(100, 280);
-                tft.print("ADVANCED");
-                break;
+            tft.setTextSize(3);
+            tft.setTextColor(TFT_BLACK, TFT_WHITE);
+            tft.setCursor(105, 200);
+            tft.print("ROOKIE");
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(55, 240);
+            tft.print("INTERMEDIATE");
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(90, 280);
+            tft.print("ADVANCED");
+            break;
             case 1:
-                tft.setTextColor(TFT_WHITE, TFT_BLACK);
-                tft.setCursor(110, 200);
-                tft.print("ROOKIE");
-                tft.setTextColor(TFT_BLACK, TFT_WHITE);
-                tft.setCursor(50, 240);
-                tft.print("INTERMEDIATE");
-                tft.setTextColor(TFT_WHITE, TFT_BLACK);
-                tft.setCursor(100, 280);
-                tft.print("ADVANCED");
-                break;
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(105, 200);
+            tft.print("ROOKIE");
+            tft.setTextColor(TFT_BLACK, TFT_WHITE);
+            tft.setCursor(55, 240);
+            tft.print("INTERMEDIATE");
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(90, 280);
+            tft.print("ADVANCED");
+            break;
             case 2:
-                tft.setTextColor(TFT_WHITE, TFT_BLACK);
-                tft.setCursor(110, 200);
-                tft.print("ROOKIE");
-                tft.setTextColor(TFT_WHITE, TFT_BLACK);
-                tft.setCursor(50, 240);
-                tft.print("INTERMEDIATE");
-                tft.setTextColor(TFT_BLACK, TFT_WHITE);
-                tft.setCursor(100, 280);
-                tft.print("ADVANCED");
-                break;
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(105, 200);
+            tft.print("ROOKIE");
+            tft.setTextColor(TFT_WHITE, TFT_BLACK);
+            tft.setCursor(55, 240);
+            tft.print("INTERMEDIATE");
+            tft.setTextColor(TFT_BLACK, TFT_WHITE);
+            tft.setCursor(90, 280);
+            tft.print("ADVANCED");
+            break;
         }
         if(butt_trig && lives_select == 0) {
             // if button is pressed and selected beginner
