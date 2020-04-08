@@ -17,11 +17,9 @@ main.h: Includes all necessary libraries as well as linking all threads together
 #include "player.h"
 #include "engine.h"
 #include "bot.h"
-#include "multiplayer.h"
 
 // include threads
 thread_t *player_thread;
-thread_t *player2_thread;
 thread_t *engine_thread;
 thread_t *bot_thread;
 

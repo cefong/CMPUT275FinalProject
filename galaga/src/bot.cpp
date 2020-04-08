@@ -126,7 +126,7 @@ void bot() {
                 // constrain y position of bot
                 if (unit[1].y >= HEIGHT - 95) {
                     // if alien reaches bottom, respawn and remove a player life
-                    unit[1].y = 80;
+                    unit[1].is_active = false;
                     unit[0].lives--;
                 }
             }

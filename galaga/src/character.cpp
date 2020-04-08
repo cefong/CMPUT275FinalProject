@@ -241,7 +241,8 @@ void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score)
 					// if bullet was fired from player
                     ammo[i].y -= BULLET_HEIGHT;
                     tft.setTextColor(TFT_RED);
-                    if((((bot->x)+15) >= ammo[i].x) && (((bot->x)-15) <= ammo[i].x)  && (((bot->y)+15) >= ammo[i].y) && (((bot->y)-15) <= ammo[i].y) && bot->is_active ){
+                    if((((bot->x)+15) >= ammo[i].x) && (((bot->x)-15) <= ammo[i].x)  && (((bot->y)+15) >= ammo[i].y) 
+																&& (((bot->y)-15) <= ammo[i].y) && bot->is_active ){
                         // if bullet hits the alien
 						ammo[i].active = false;
 						 // radius is 35 so we don't have to delete bullets 
@@ -270,7 +271,8 @@ void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score)
                 else {
 					// if bullet was fired by alien
                     ammo[i].y += BULLET_HEIGHT;
-                    if((((player->x)+15) >= ammo[i].x) && (((player->x)-15) <= ammo[i].x)  && (((player->y)+15) >= ammo[i].y) && (((player->y)-15) <= ammo[i].y) && player->is_active ){
+                    if((((player->x)+15) >= ammo[i].x) && (((player->x)-15) <= ammo[i].x)  && (((player->y)+15) >= ammo[i].y) 
+														&& (((player->y)-15) <= ammo[i].y) && player->is_active ){
                         // if bullet hits player
 						ammo[i].active=0;
 						 // radius is only 29 because the floor gets removed at 40

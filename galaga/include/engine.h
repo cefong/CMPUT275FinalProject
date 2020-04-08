@@ -17,7 +17,6 @@ engine.h: Header for engine.cpp, links to other threads
 // include threads
 extern thread_t *engine_thread;
 extern thread_t *player_thread;
-extern thread_t *player2_thread;
 extern thread_t *bot_thread;
 
 // include tft display

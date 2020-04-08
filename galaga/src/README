@@ -102,6 +102,7 @@ Minh:
  *Design of bullet struct
  *Design of main screen
  *Low Level Hardware Programming(EEPROM and Interrupt)
+ *Bullet Travel Handler
  *Engine handler
 Celine:
  *Graphics and UI/UX

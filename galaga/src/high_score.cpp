@@ -30,7 +30,6 @@ void high_score_put(high_score h) {
 
 // trigger mass clearing of eeprom
 void high_score_clear() {
-    for(int i = 0; i < EEPROM.length(); i++) {
-        EEPROM.write(i, 0);
-    }
+    high_score clear = {0, 0, 0};
+    high_score_put(clear);
 }
