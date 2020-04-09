@@ -1,5 +1,5 @@
 /*
-Names: Claire Martin (1571140), Celine Fong, Minh Dang, Zi Xue Lim
+Names: Claire Martin (1571140), Celine Fong (1580124), Minh Dang, Zi Xue Lim
 CMPUT 275, Winter 2020
 
 Final Project: A Variation on 'Galaga'
@@ -202,6 +202,14 @@ void fire_bullet(player_alien *ship) {
 }
 
 void drawExplosion(int16_t anchorX, int16_t anchorY, int16_t scale) {
+	/*
+	Draws an explosion surrounding a chosen character
+
+	PARAMETERS:
+		anchorX: x position of character
+		anchorY: y position of character
+		scale: how many pixels each block will take up
+    */
 	// set colors
 	int16_t color1 = COLOR_1_EXPLOSION;
 	int16_t color2 = COLOR_2_EXPLOSION;
@@ -333,22 +341,6 @@ void drawExplosion(int16_t anchorX, int16_t anchorY, int16_t scale) {
 	tft.drawRect(anchorX, anchorY+2*scale, scale, scale, color4);
 	tft.drawRect(anchorX, anchorY+1*scale, scale, scale, color4);
 }
-
-/*
-void drawExplosion(int x, int y, int radius, uint16_t colorBull){
-	/*
-	Draws an explosion surrounding a chosen character
-
-	PARAMETERS:
-		x: x position of character
-		y: y position of character
-		radius: radius of circle
-		colourBull: colour of explosion (depends on character type)
-    */
-    tft.fillCircle(x, y, radius, colorBull);
-    tft.fillCircle(x, y, radius, TFT_BLACK);
-}
-*/
 
 
 void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score) {

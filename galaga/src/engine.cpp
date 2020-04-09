@@ -1,5 +1,5 @@
 /*
-Names: Claire Martin (1571140), Celine Fong, Minh Dang, Zi Xue Lim
+Names: Claire Martin (1571140), Celine Fong (1580124), Minh Dang, Zi Xue Lim
 CMPUT 275, Winter 2020
 
 Final Project: A Variation on 'Galaga'
@@ -349,6 +349,7 @@ static int show_lives_selection() {
             tft.print("ADVANCED");
             break;
             case 1:
+            tft.setTextSize(3);
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
             tft.setCursor(105, 200);
             tft.print("ROOKIE");
@@ -358,8 +359,9 @@ static int show_lives_selection() {
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
             tft.setCursor(90, 280);
             tft.print("ADVANCED");
-            break;
+            break;            
             case 2:
+            tft.setTextSize(3);
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
             tft.setCursor(105, 200);
             tft.print("ROOKIE");

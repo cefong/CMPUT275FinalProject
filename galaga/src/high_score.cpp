@@ -1,3 +1,10 @@
+/*
+Names: Claire Martin (1571140), Celine Fong (1580124), Minh Dang, Zi Xue Lim
+CMPUT 275, Winter 2020
+
+Final Project: A Variation on 'Galaga'
+high_score.cpp: Makes use of the EEPROM to store high scores
+*/
 #include "high_score.h"
 
 static int eeAdr = 0;
