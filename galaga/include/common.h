@@ -42,8 +42,12 @@ common.h: Defines global constants for TFT display and structs for characters
 #define SCALE           3
 
 // number of bullets and bots
-#define PLAY_NUM_BULLET 20
+#define PLAY_NUM_BULLET 10
+#define PLAYER_BULLETS  5
+#define ENEMY_BULLETS   5
 #define BOT_NUM         10
+
+
 
 
 // character struct

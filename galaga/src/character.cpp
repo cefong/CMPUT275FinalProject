@@ -11,6 +11,10 @@ character.cpp: Character/graphics control
 // define array of bullet structs (size is number allowed on screen at once)
 bullet ammo[PLAY_NUM_BULLET];
 
+// define number of bullets each ship should have (testing)
+int playerAmmo = PLAYER_BULLETS;
+int enemyAmmo = ENEMY_BULLETS;
+
 static void draw_bullet(bool is_player, int x, int y) {
     /*
 	Draws a bullet starting from top or bottom depending on character type.
@@ -47,7 +51,7 @@ void drawHeart(int16_t anchorX, int16_t anchorY, int16_t scale, int16_t color = 
 		anchorX: Anchor x position for bitmap (top left)
 		anchorY: Anchor y position for bitmap (top left)
 		scale: Chosen scale of bitmap (able to make large or smaller)
-		color: Chosen colour of character (default red for aliens)
+		color: Chosen colour of character (default red)
     */
     // anchor point in upper left corner
     tft.drawRect(anchorX, anchorY+2*scale, scale, 3*scale, color);
@@ -189,13 +193,25 @@ void fire_bullet(player_alien *ship) {
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {
 		// allows us to have multiple bullets going at once
         if(!ammo[i].active) {
-            ammo[i].active = true;
-            ammo[i].player = is_player;
-            ammo[i].x = x;
-			// if player, move up the screen (subtract from y position)
-            if(is_player) ammo[i].y = y - 2 * BULLET_HEIGHT;
-			// if alien, move down the screen
-            else ammo[i].y = y + 2 * BULLET_HEIGHT;            
+            if(is_player && playerAmmo >= 0) {
+				// if player, move up the screen (subtract from y position)
+				ammo[i].y = y - 2 * BULLET_HEIGHT;
+				// decrement player's ammo count
+				playerAmmo -= 1;
+				// set up ammo
+            	ammo[i].active = true;
+				ammo[i].player = is_player;
+				ammo[i].x = x;
+			} else if (!is_player && enemyAmmo >= 0) {
+				// if alien, move down the screen
+				ammo[i].y = y + 2 * BULLET_HEIGHT;
+	   			// decrement enemy's ammo count
+				enemyAmmo -=1;
+				// set up ammo
+            	ammo[i].active = true;
+				ammo[i].player = is_player;
+				ammo[i].x = x;
+			}          
             break;
         }
     }
@@ -361,6 +377,13 @@ void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score)
 				// if bullet hits edge of screen, deactivate and remove it
 				tft.fillRoundRect(ammo[i].x, ammo[i].y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, TFT_BLACK);
                 ammo[i].active = false;
+				if (ammo[i].player) {
+					// if it is the player's bullet, increment their ammo count
+					playerAmmo += 1;
+				} else if (!ammo[i].player) {
+					// if it is the enemy's bullet, increment their ammo count
+					enemyAmmo += 1;
+				}
             }
             else {
                 if(ammo[i].player) {
@@ -368,8 +391,11 @@ void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score)
                     ammo[i].y -= BULLET_HEIGHT;
                     tft.setTextColor(TFT_RED);
                     if((((bot->x)+15) >= ammo[i].x) && (((bot->x)-15) <= ammo[i].x)  && (((bot->y)+15) >= ammo[i].y) && (((bot->y)-15) <= ammo[i].y) && bot->is_active ){
+						// if the bullet hit the enemy, deactivate it
                         ammo[i].active=0;
-                        drawExplosion(bot->x,bot->y , 3); // put radius as 40 so dont have to delete bullets
+						// increment player's ammo count
+						playerAmmo += 1;
+                        drawExplosion(bot->x,bot->y , 3); // scale of 3 so that don't have to delete bullets
 						tft.fillCircle(bot->x, bot->y, 40, TFT_BLACK); 
                         bot->lives = (bot->lives)-1;
                         if((bot -> lives) == 0){ // do something when the bot dies.
@@ -389,7 +415,10 @@ void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score)
                 else {
                     ammo[i].y += BULLET_HEIGHT;
                     if((((player->x)+15) >= ammo[i].x) && (((player->x)-15) <= ammo[i].x)  && (((player->y)+15) >= ammo[i].y) && (((player->y)-15) <= ammo[i].y) && player->is_active ){
+						// if bullet hit player, deactivate the bullet
                         ammo[i].active=0;
+						// increment the enemy's ammo count
+						enemyAmmo += 1;
                         drawExplosion(player->x,player->y , 3); // put radius samller than bot cause the floor gets removed at 40
 						tft.fillCircle(player->x, player->y, 30, TFT_BLACK);
                         player->lives = (player->lives)-1;
