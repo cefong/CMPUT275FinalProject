@@ -14,12 +14,12 @@ static THD_FUNCTION(Player, arg) {
   player();
 }
 
-static THD_WORKING_AREA(waBot, 1024);
+static THD_WORKING_AREA(waBot, 512);
 static THD_FUNCTION(Bot, arg) {
   (void)arg;
   bot();
 }
-static THD_WORKING_AREA(waBot2, 1024);
+static THD_WORKING_AREA(waBot2, 512);
 static THD_FUNCTION(Bot2, arg) {
   (void)arg;
   bot2();

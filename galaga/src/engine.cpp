@@ -445,8 +445,7 @@ static void singleplayer() {
         drawSpaceship(&unit[1], SCALE);
         drawSpaceship(&unit[2], SCALE);
         // handle bullets      
-        bullet_update(&unit[1],&unit[0], high_score);
-        bullet_update(&unit[2],&unit[0], high_score);
+        bullet_update(&unit[1],&unit[2], &unit[0], high_score);
         chMsgWait();
         // update player
         msg_t stat = chMsgGet(player_thread);

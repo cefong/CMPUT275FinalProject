@@ -132,6 +132,7 @@ void bot() {
         }
     }
 }
+
 void bot2() {
     /*
     Controls the movement of the bot based on time and player movement

@@ -335,7 +335,7 @@ void drawExplosion(int16_t anchorX, int16_t anchorY, int16_t scale) {
 }
 
 
-void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score) {
+void bullet_update(player_alien *bot, player_alien *bot2, player_alien *player, uint32_t high_score) {
 	/*
 	Updates bullet positions for bots and players.
 
@@ -368,6 +368,28 @@ void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score)
 							bot -> is_active = false;
 							bot -> x = 0;
 							bot -> y = 0;
+							// erase old score
+							tft.setTextColor(TFT_WHITE, TFT_BLACK);
+							tft.fillRect(200, 30, WIDTH - 200, 15, TFT_BLACK);
+							// update score
+							player -> score += 100;
+			            	tft.setCursor(200, 30);
+            				tft.print(player->score);
+							if(player->score > high_score) {
+								tft.setCursor(10, 30);
+								tft.print(player->score);
+							}
+                        }
+                	}
+					if((((bot2->x)+15) >= ammo[i].x) && (((bot2->x)-15) <= ammo[i].x)  && (((bot2->y)+15) >= ammo[i].y) && (((bot2->y)-15) <= ammo[i].y) && bot2->is_active ){
+                        ammo[i].active=0;
+                        drawExplosion(bot2->x,bot2->y , 3); // put radius as 40 so dont have to delete bullets
+						tft.fillCircle(bot2->x, bot2->y, 40, TFT_BLACK); 
+                        bot2->lives = (bot2->lives)-1;
+                        if((bot2 -> lives) == 0){ // do something when the bot dies.
+							bot2 -> is_active = false;
+							bot2 -> x = 0;
+							bot2 -> y = 0;
 							// erase old score
 							tft.setTextColor(TFT_WHITE, TFT_BLACK);
 							tft.fillRect(200, 30, WIDTH - 200, 15, TFT_BLACK);
