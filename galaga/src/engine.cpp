@@ -111,23 +111,27 @@ static void high_score_show() {
         chMsgRelease(player_thread, MSG_OK);
 
         // display high score title
+        tft.setCursor(35, 60);
+        tft.setTextSize(7);
+        tft.setTextColor(TFT_RED, TFT_BLACK);
+        tft.print("GALAGA");
         tft.setTextSize(4);
         tft.setTextColor(TFT_RED, TFT_BLACK);
-        tft.setCursor(50, 60);
-        tft.print("HIGH SCORE");
+        tft.setCursor(25, 120);
+        tft.print("HIGH SCORES");
         // display rookie high score
-        tft.setTextSize(2);
+        tft.setTextSize(3);
         tft.setTextColor(TFT_WHITE, TFT_BLACK);
-        tft.setCursor(10, 150);
-        tft.print("ROOKIE: ");
+        tft.setCursor(0, 180);
+        tft.println("ROOKIE: ");
         tft.print(temp.rookie);
         // display intermediate high score
-        tft.setCursor(10, 180);
-        tft.print("INTERMEDIATE: ");
+        tft.setCursor(0, 250);
+        tft.println("INTERMEDIATE: ");
         tft.print(temp.intermediate);
         // display advanced high score
-        tft.setCursor(10, 210);
-        tft.print("ADVANCED: ");
+        tft.setCursor(0, 320);
+        tft.println("ADVANCED: ");
         tft.print(temp.advanced);
 
         // allow users to go back or clear scores
@@ -170,7 +174,6 @@ static void high_score_show() {
 static void endScreen(int currentScore, int highScore, int mode){
     /*
     Display end screen
-
     PARAMETERS:
         currentScore: player's score
         highScore: current high score for player's level
@@ -203,12 +206,16 @@ static void endScreen(int currentScore, int highScore, int mode){
             tft.print("NEW HIGH SCORE");
         }
         // print current high score
-        tft.setCursor(35,280);
+        tft.setCursor(35,300);
         tft.setTextSize(2);
         tft.print("Current High Score: ");
-        tft.print(highScore);
-        // print player's score
         tft.setCursor(35,330);
+
+        tft.setTextColor(TFT_CYAN);
+        tft.print(highScore);
+        tft.setTextColor(TFT_WHITE);
+        // print player's score
+        tft.setCursor(35,360);
         tft.print("Your Score: ");
         tft.print(currentScore);
 
