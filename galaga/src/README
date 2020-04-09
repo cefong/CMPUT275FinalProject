@@ -111,7 +111,8 @@ Celine:
  *Level selection
 Zi:
  *Bullet handling
- *Definitions for when a player/alien has been 'hit' and what happens after
+ *Definitions for when a player/alien has been 'hit' and what happens
  *Losing lives after being hit
  *Handling player death
  *Design of game over screen
+ *Design of high score screen
