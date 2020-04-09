@@ -304,6 +304,7 @@ static void asset_init() {
     unit[0].y_temp = HEIGHT- 85;
     unit[0].is_active = true;
     unit[0].is_player = true;
+    unit[0].bullets = 10;
     // reset alien position and reactivate it
     unit[1].x = WIDTH/2;
     unit[1].y = 90;
@@ -426,6 +427,7 @@ static void singleplayer() {
     int mode = unit[0].lives;
     asset_init();
     uint32_t high_score = high_score_init(unit[0].lives);
+    systime_t time_start_bul, time_end_bul;
     main_screen_init(&unit[0], high_score);
     //int live_temp_player = unit[0].lives;
     // loop while game is still in play (player is alive)
@@ -453,10 +455,19 @@ static void singleplayer() {
         unit[0].x = constrain(unit[0].x, size*SCALE, WIDTH - size*SCALE);
         // check for button press
         eventmask_t butt_trig = chEvtWaitAnyTimeout(ALL_EVENTS, 0);
-
-        if(butt_trig) {
+        if(unit[0].bullets > 0) {
+            time_start_bul = chVTGetSystemTime();
+        }
+        else {
+            time_end_bul = chVTGetSystemTime();
+            if(time_end_bul - time_start_bul >= TIME_I2MS(2000)) {
+                unit[0].bullets = 10;
+            }
+        }
+        if(butt_trig && unit[0].bullets > 0) {
             // if player is firing, fire a bullet from player position
             fire_bullet(&unit[0]);
+            unit[0].bullets--;
         }
 
         if(unit[1].is_active) {
