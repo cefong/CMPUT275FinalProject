@@ -166,7 +166,7 @@ static void high_score_show() {
             // if selected clear
             high_score_clear();
             high_score_get(&temp);
-            tft.fillRect(0, 140, WIDTH, 90, TFT_BLACK);
+            tft.fillRect(0, 170, WIDTH, 200, TFT_BLACK);
         }
     }
 }
