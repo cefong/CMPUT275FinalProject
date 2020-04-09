@@ -1,0 +1,117 @@
+Names: Claire Martin (1571140), Celine Fong, Minh Dang, Zi Xue Lim
+CMPUT 275 Win 2020
+
+Final Project- A Variation on "Galaga"
+
+Included Files:
+    src:
+        *bot.cpp: controls bot thread
+        *character.cpp: handles graphics of characters and bullets
+        *engine.cpp: main thread, controls TFT display and calls other threads when necessary
+        *main.cpp: sets up pins and threads
+        *player.cpp: controls player thread
+        README
+    include:
+        *bot.h: header file for bot.cpp
+        *character.h: header file for character.cpp
+        *common.h: contains global variables and data structures
+        *engine.h: header file for engine.cpp
+        *main.h: header file for main.cpp
+        *player.h: header file for player.cpp
+    
+Accessories:
+    *Arduino MEGA Board
+    *Wires
+    *Joystick
+    *TFT display
+    *Breadboard
+
+Wiring Instructions:
+Arduino 5V --> Joystick 5V
+Arduino GND --> Joystick GND
+Arduino Pin A10 --> Joystick VRy
+Arduino Pin A8 --> Joystick VRx
+Arduino Pin 21SCL --> Joystick SW
+TFT Display --> Arduino
+
+Running Instructions:
+
+User's Manual:
+This project is a variation on the space invaders game known as "Galaga". When run,
+it begins with a main screen showing the game title and three options: Play
+or High Scores. When a user presses Play, they will be taken to a different screen
+to choose their level (Rookie, Intermediate, or Advanced). These correspond to the player
+having 5, 3, and 1 life respectively. Once the player has selected a level, they will
+begin gameplay. The player can use the joystick to move left or right, but not up or down
+as the player is constrained to the bottom of the screen. They can also press the joystick 
+button to shoot. The alien begins at the top of the screen and moves side to side, shooting
+at the player whenever they are lined up. The alien also moves down the screen in increments
+every 10 seconds, constantly getting closer to the player. As well, the alien speeds up
+every 5 seconds until it reaches a maximum speed. The goal of the game is to kill as many
+aliens as possible before you run out of lives. The aliens have 3 lives by default, 
+and both aliens and players lose a life if they get hit by a bullet. The player's lives
+are shown at the bottom of the screen as hearts. When either the player or the alien get
+hit, they will show a small explosion indicating they have lost a life. If an alien dies,
+a new alien will spawn at the top of the screen. If the player dies, it will have a red 
+explosion and a "Game over" screen will appear. This screen will display the player's score 
+as well as the current high score for their level. The player will have an option to go 
+back to the main screen.
+
+Our project makes use of data structures such as a 'player_alien' struct that contains 
+information about a character's x and y position, whether it is an alien or a player, 
+whether it is active (alive), the number of lives it has, its score, and whether it is 
+currently firing a bullet. This struct is stored in the file common.h, which also includes 
+the bullet struct. The bullet struct stores information such as the x and y position of a
+bullet and whether it came from a player or an alien. This information is important because
+the source of the bullet determines the direction it must travel in.
+
+The file bot.cpp controls the alien movement. The alien moves back and forth across the
+screen, occassionally 'jumping' down a level towards the player. If the alien's x position
+lines up with the player's x position (plus or minus 10 pixels), the alien will shoot a 
+bullet. As well, the alien has dodging ability, so if a player bullet is in line with the 
+it will quickly change directions in an attempt to avoid being hit. If an alien dies,
+it will respawn at the top of the screen as if a new alien had appeared. If the alien gets 
+to the bottom of the screen without dying, the player will lose a life and the alien will 
+respawn.
+
+The file player.cpp controls player movement. The user can utilize the joystick to move the 
+player left and right as well as to shoot at the alien. If the player dies, the game ends
+and a 'game over' screen is displayed. Each time the player kills an alien, they get 100
+points. We have implemented a function that stores the top 6 high scores from each level
+in the Arduino's permanent memory, so that a player can see the top scores no matter
+if the Arduino has been unplugged or not.
+
+The file engine.cpp controls the player and bot threads and determines which screen should
+be displayed. It also calls for information from the player and bot threads and updates
+the global player_alien structs as needed. Finally, the file character.cpp contains all functions
+to draw the characters, update and draw bullets, and draw hearts and explosions.
+
+Member Roles:
+Claire:
+ *Design of player_alien struct and helped with bullet struct
+ *Alien movement
+ *Alien 'jumping' down towards player
+ *Alien speeding up with time
+ *Alien only shooting when player is in range
+ *Alien dodging when player shoots
+ *File headers and README
+Minh:
+ *Base code for threads
+ *Communication between threads
+ *High scores/storing on Arduino permanent memory
+ *Design of bullet struct
+ *Design of main screen
+ *Low Level Hardware Programming(EEPROM and Interrupt)
+ *Bullet Travel Handler
+ *Engine handler
+Celine:
+ *Graphics and UI/UX
+ *Alien/Player designs using bitmap images
+ *Drawing explosions
+ *Level selection
+Zi:
+ *Bullet handling
+ *Definitions for when a player/alien has been 'hit' and what happens after
+ *Losing lives after being hit
+ *Handling player death
+ *Design of game over screen
