@@ -460,7 +460,7 @@ static void singleplayer() {
         }
         else {
             time_end_bul = chVTGetSystemTime();
-            if(time_end_bul - time_start_bul >= TIME_I2MS(2000)) {
+            if(time_end_bul - time_start_bul >= TIME_I2MS(RELOADING)) {
                 unit[0].bullets = 10;
             }
         }
