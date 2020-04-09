@@ -44,6 +44,7 @@ common.h: Defines global constants for TFT display and structs for characters
 // number of bullets and bots
 #define PLAY_NUM_BULLET 100
 #define BOT_NUM         10
+#define RELOADING       2000
 
 
 // character struct

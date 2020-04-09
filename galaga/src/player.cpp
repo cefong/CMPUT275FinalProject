@@ -10,8 +10,6 @@ player.cpp: Handles player movement and joystick control
 extern thread_t *engine_thread;
 
 // initialize player position
-static int x = WIDTH/2;
-static const int y = HEIGHT - 85;
 
 
 void player_vert() {
