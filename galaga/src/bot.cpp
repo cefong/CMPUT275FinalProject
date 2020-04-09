@@ -106,7 +106,6 @@ void bot() {
 
                 // move alien back and forth
                 switch(is_left){
-                    // change direction at edges of screen
                     case 0:
                     unit[1].x -= alien_speed;
                     break;
@@ -115,7 +114,7 @@ void bot() {
                     break;
                 }
                 
-                // constrain x position of bot
+                // constrain x position of bot and change direction at each edge
                 unit[1].x = constrain(unit[1].x, size*SCALE, WIDTH - size*SCALE);
                 if(unit[1].x <= size*SCALE && !is_left) {
                     is_left = 1;

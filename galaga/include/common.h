@@ -23,7 +23,6 @@ common.h: Defines global constants for TFT display and structs for characters
 #define JOY_VERT        A8
 #define BUTT            21
 
-
 // gameplay/design constants
 #define YP              A3
 #define XM              A2
@@ -54,11 +53,11 @@ struct player_alien {
     int y; // y position
     int x_temp = -5;
     int y_temp = -5;
-    uint16_t score = 0;
-    bool is_fire = false;
-    bool is_player = false;
-    bool is_active;
-    int bullets = 10;
+    uint16_t score = 0; // current score
+    bool is_fire = false; // is it firing? 
+    bool is_player = false; // is it a player or alien?
+    bool is_active; // dead or alive
+    int bullets = 10; // number of bullets
 };
 
 // high score struct

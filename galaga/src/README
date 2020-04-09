@@ -2,6 +2,7 @@ Names: Claire Martin (1571140), Celine Fong, Minh Dang, Zi Xue Lim
 CMPUT 275 Win 2020
 
 Final Project- A Variation on "Galaga"
+README
 
 Included Files:
     src:
@@ -10,12 +11,14 @@ Included Files:
         *engine.cpp: main thread, controls TFT display and calls other threads when necessary
         *main.cpp: sets up pins and threads
         *player.cpp: controls player thread
+        *high_score.cpp: controls high score storage and updating
         README
     include:
         *bot.h: header file for bot.cpp
         *character.h: header file for character.cpp
         *common.h: contains global variables and data structures
         *engine.h: header file for engine.cpp
+        *high_score.h: header file for high_score.cpp
         *main.h: header file for main.cpp
         *player.h: header file for player.cpp
     
@@ -41,22 +44,40 @@ This project is a variation on the space invaders game known as "Galaga". When r
 it begins with a main screen showing the game title and three options: Play
 or High Scores. When a user presses Play, they will be taken to a different screen
 to choose their level (Rookie, Intermediate, or Advanced). These correspond to the player
-having 5, 3, and 1 life respectively. Once the player has selected a level, they will
+having 5, 3, and 1 lives respectively. Once the player has selected a level, they will
 begin gameplay. The player can use the joystick to move left or right, but not up or down
 as the player is constrained to the bottom of the screen. They can also press the joystick 
-button to shoot. The alien begins at the top of the screen and moves side to side, shooting
-at the player whenever they are lined up. The alien also moves down the screen in increments
-every 10 seconds, constantly getting closer to the player. As well, the alien speeds up
-every 5 seconds until it reaches a maximum speed. The goal of the game is to kill as many
-aliens as possible before you run out of lives. The aliens have 3 lives by default, 
-and both aliens and players lose a life if they get hit by a bullet. The player's lives
-are shown at the bottom of the screen as hearts. When either the player or the alien get
-hit, they will show a small explosion indicating they have lost a life. If an alien dies,
-a new alien will spawn at the top of the screen. If the player dies, it will have a red 
-explosion and a "Game over" screen will appear. This screen will display the player's score 
-as well as the current high score for their level. The player will have an option to go 
-back to the main screen.
+button to shoot. 
 
+The alien begins at the top of the screen and moves side to side, shooting
+at the player whenever it is within 10 pixels of the alien's x-position. The alien also
+moves down the screen in increments of 25 pixels every 10 seconds, constantly getting 
+closer to the player. As well, the alien speeds up every 5 seconds until it reaches a 
+maximum speed. The alien has dodging ability, so it can see if a bullet is within 10 pixels
+of its x-position and 40 pixels of its y-position. In this case, the alien will switch 
+to try to avoid the bullets. This makes the game more difficult but not impossible as the 
+alien has a threshold of which bullets it can see. As well, the alien has trouble sensing
+bullets when it is also shooting.
+
+The goal of the game is to kill as many aliens as possible before you 
+run out of lives. The aliens have 3 lives by default, and both aliens and players lose a 
+life if they get hit by a bullet. If the player shoots 10 bullets, they will need to wait 
+2 seconds to reaload. The player's lives are shown at the bottom of the screen 
+as hearts. When either the player or the alien get hit, they will show a small explosion 
+indicating they have lost a life. If an alien dies, a new alien will spawn at the top of 
+the screen. If the player dies, it will have a red explosion and a "Game over" screen will 
+appear. This screen will display the player's score as well as the current high score for 
+their level. The player will have an option to go back to the main screen.
+
+If the user selects the "HIGH SCORE" option on the main screen, they will be able to view 
+the current high scores for each level. The high scores are stored on the Arduino permanent 
+memory, so they will remain updated even when the Arduino is unplugged. However, the first
+time the program is run on a new device, the user should go to the high score screen and 
+choose "Clear" in order to clear the sections of Arduino memory that store the high scores.
+Otherwise, the high scores will appear as seemingly randomly very large values. The clear 
+button will reset all high scores to 0.
+
+Notes and Assumptions:
 Our project makes use of data structures such as a 'player_alien' struct that contains 
 information about a character's x and y position, whether it is an alien or a player, 
 whether it is active (alive), the number of lives it has, its score, and whether it is 
@@ -83,13 +104,18 @@ if the Arduino has been unplugged or not.
 
 The file engine.cpp controls the player and bot threads and determines which screen should
 be displayed. It also calls for information from the player and bot threads and updates
-the global player_alien structs as needed. Finally, the file character.cpp contains all functions
-to draw the characters, update and draw bullets, and draw hearts and explosions.
+the global player_alien structs as needed. Finally, the file character.cpp contains all 
+functions to draw the characters, update and draw bullets, and draw hearts and explosions.
+The file high_score.cpp controls storing and updating high scores on Arduino permanent memory 
+using EEPROM. We assume the user does not have anything else stored at these locations when 
+running or program, and the user should use the clear button in the high score screen as 
+mentioned above in order to clear the high scores to 0. This will wipe those sections of 
+memory used for the high scores, so the user should be careful that they don't have anything
+important stored in Arduino permanent memory.
 
 Member Roles:
 Claire:
  *Design of player_alien struct and helped with bullet struct
- *Alien movement
  *Alien 'jumping' down towards player
  *Alien speeding up with time
  *Alien only shooting when player is in range
@@ -98,17 +124,20 @@ Claire:
 Minh:
  *Base code for threads
  *Communication between threads
+ *Joystick and button input
  *High scores/storing on Arduino permanent memory
  *Design of bullet struct
- *Design of main screen
+ *Basic design of main screen
  *Low Level Hardware Programming(EEPROM and Interrupt)
- *Bullet Travel Handler
+ *Bullet Travel Handler/Bullet Limits
  *Engine handler
 Celine:
  *Graphics and UI/UX
+ *More detailed design of main screen, gameplay screen and other graphics
  *Alien/Player designs using bitmap images
  *Drawing explosions
  *Level selection
+ *Bullet limits
 Zi:
  *Bullet handling
  *Definitions for when a player/alien has been 'hit' and what happens
