@@ -47,7 +47,8 @@ TFT Display --> Arduino
 Running Instructions:
 
 In order to run this firmware, redirecting to directory containing the Makefile,
-use "arduino-port-select" to select the port for uploading. 
+use "arduino-port-select" to select the port for uploading. Then type "make upload" in the
+same directory to run the program.
 
 User's Manual:
 This project is a variation on the space invaders game known as "Galaga". When run,
