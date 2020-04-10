@@ -6,7 +6,6 @@ Final Project: A Variation on 'Galaga'
 bot.h: Links engine thread to bot thread
 */
 
-
 #ifndef __BOT_H
 #define __HOT_H
 

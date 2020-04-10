@@ -9,8 +9,6 @@ player.cpp: Handles player movement and joystick control
 #include "player.h"
 extern thread_t *engine_thread;
 
-// initialize player position
-
 
 void player_vert() {
     /*
@@ -74,5 +72,4 @@ void player() {
             else if(sig == 3) player_horz(1);
         }
     }
-
 }

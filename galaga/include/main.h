@@ -26,5 +26,4 @@ thread_t *bot_thread;
 // include tft display
 MCUFRIEND_kbv tft;
 
-
 #endif
