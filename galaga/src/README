@@ -5,14 +5,15 @@ Final Project- A Variation on "Galaga"
 README
 
 Included Files:
+    Makefile
+    README
     src:
         *bot.cpp: controls bot thread
         *character.cpp: handles graphics of characters and bullets
         *engine.cpp: main thread, controls TFT display and calls other threads when necessary
         *main.cpp: sets up pins and threads
         *player.cpp: controls player thread
-        *high_score.cpp: controls high score storage and updating
-        README
+        *high_score.cpp: controls high score storage and updating  
     include:
         *bot.h: header file for bot.cpp
         *character.h: header file for character.cpp
@@ -21,7 +22,13 @@ Included Files:
         *high_score.h: header file for high_score.cpp
         *main.h: header file for main.cpp
         *player.h: header file for player.cpp
-    
+    lib:
+        *EEPROM: updated to the latest from Arduino's github (containing 2 useful functions "put" and "get")
+        *SPI: updated to the latest from Arduino's github
+        *TouchScreen: taken from lecture's library
+        *Adafruit_GFX: updated to the latest from Adafruit's github
+        *MCUFRIEND_kbv: updated to the latest from prenticedavid's github. Modified to adjust with RTOS, no bad delay
+        *ChRt: ChibiOS RTOS as the frame of this project
 Accessories:
     *Arduino MEGA Board
     *Wires
@@ -38,6 +45,9 @@ Arduino Pin 21SCL --> Joystick SW
 TFT Display --> Arduino
 
 Running Instructions:
+
+In order to run this firmware, redirecting to directory containing the Makefile,
+use "arduino-port-select" to select the port for uploading. 
 
 User's Manual:
 This project is a variation on the space invaders game known as "Galaga". When run,
@@ -70,10 +80,10 @@ appear. This screen will display the player's score as well as the current high 
 their level. The player will have an option to go back to the main screen.
 
 If the user selects the "HIGH SCORE" option on the main screen, they will be able to view 
-the current high scores for each level. The high scores are stored on the Arduino permanent 
-memory, so they will remain updated even when the Arduino is unplugged. However, the first
+the current high scores for each level. The high scores are stored on the EEPROM, so they 
+will remain updated even when the Arduino is unplugged. However, the first
 time the program is run on a new device, the user should go to the high score screen and 
-choose "Clear" in order to clear the sections of Arduino memory that store the high scores.
+choose "Clear" in order to clear the sections of EEPROM(address 0) that store the high scores.
 Otherwise, the high scores will appear as seemingly randomly very large values. The clear 
 button will reset all high scores to 0.
 
@@ -98,7 +108,7 @@ respawn.
 The file player.cpp controls player movement. The user can utilize the joystick to move the 
 player left and right as well as to shoot at the alien. If the player dies, the game ends
 and a 'game over' screen is displayed. Each time the player kills an alien, they get 100
-points. We have implemented a function that stores the top 6 high scores from each level
+points. We have implemented a function that stores the high scores from each level
 in the Arduino's permanent memory, so that a player can see the top scores no matter
 if the Arduino has been unplugged or not.
 
@@ -106,12 +116,11 @@ The file engine.cpp controls the player and bot threads and determines which scr
 be displayed. It also calls for information from the player and bot threads and updates
 the global player_alien structs as needed. Finally, the file character.cpp contains all 
 functions to draw the characters, update and draw bullets, and draw hearts and explosions.
-The file high_score.cpp controls storing and updating high scores on Arduino permanent memory 
-using EEPROM. We assume the user does not have anything else stored at these locations when 
-running or program, and the user should use the clear button in the high score screen as 
-mentioned above in order to clear the high scores to 0. This will wipe those sections of 
-memory used for the high scores, so the user should be careful that they don't have anything
-important stored in Arduino permanent memory.
+The file high_score.cpp controls storing and updating high scores on EEPROM. We assume the 
+user does not have anything else stored at these locations when running or program, and 
+the user should use the clear button in the high score screen as mentioned above in order to 
+clear the high scores to 0. This will wipe those sections of memory used for the high scores, 
+so the user should be careful that they don't have anything important stored in EEPROM.
 
 Member Roles:
 Claire:
@@ -125,12 +134,13 @@ Minh:
  *Base code for threads
  *Communication between threads
  *Joystick and button input
- *High scores/storing on Arduino permanent memory
+ *High scores/storing on EEPROM
  *Design of bullet struct
  *Basic design of main screen
  *Low Level Hardware Programming(EEPROM and Interrupt)
  *Bullet Travel Handler/Bullet Limits
  *Engine handler
+ *Makefile
 Celine:
  *Graphics and UI/UX
  *More detailed design of main screen, gameplay screen and other graphics
