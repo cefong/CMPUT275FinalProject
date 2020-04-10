@@ -356,69 +356,67 @@ void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score)
 
     // iterate through each bullet
     for(int i = 0; i < PLAY_NUM_BULLET; i++) {
-        if(ammo[i].active) {
-			// draw active bullets
-            draw_bullet(ammo[i].player, ammo[i].x, ammo[i].y);
-            if(ammo[i].y < 50 + 2*BULLET_HEIGHT || ammo[i].y > HEIGHT - 50 - 2*BULLET_HEIGHT) {
-				// if bullet hits edge of screen, deactivate and remove it
-				tft.fillRoundRect(ammo[i].x, ammo[i].y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, TFT_BLACK);
-                ammo[i].active = false;
-            }
-            else {
-                if(ammo[i].player) {
-					// if bullet was fired from player
-                    ammo[i].y -= BULLET_HEIGHT;
-                    tft.setTextColor(TFT_RED);
-					// if bullet hits bot
-                    if((((bot->x)+15) >= ammo[i].x) && (((bot->x)-15) <= ammo[i].x)  && (((bot->y)+15) >= ammo[i].y) && (((bot->y)-15) <= ammo[i].y) && bot->is_active ){
-						ammo[i].active=0;
-                        drawExplosion(bot->x,bot->y , 3);
-						tft.fillCircle(bot->x, bot->y, 40, TFT_BLACK); 
-                        bot->lives = (bot->lives)-1;
+    	  if(ammo[i].active) {
+		// draw active bullets
+        	draw_bullet(ammo[i].player, ammo[i].x, ammo[i].y);
+            	if(ammo[i].y < 50 + 2*BULLET_HEIGHT || ammo[i].y > HEIGHT - 50 - 2*BULLET_HEIGHT) {
+			// if bullet hits edge of screen, deactivate and remove it
+			tft.fillRoundRect(ammo[i].x, ammo[i].y, BULLET_WIDTH, BULLET_HEIGHT, BULLET_RAD, TFT_BLACK);
+                	ammo[i].active = false;
+            	} else {
+                	if(ammo[i].player) {
+				// if bullet was fired from player
+                   		ammo[i].y -= BULLET_HEIGHT;
+                    		tft.setTextColor(TFT_RED);
+				// if bullet hits bot
+                    		if((((bot->x)+15) >= ammo[i].x) && (((bot->x)-15) <= ammo[i].x)  && (((bot->y)+15) >= ammo[i].y) && (((bot->y)-15) <= ammo[i].y) && bot->is_active ){
+					ammo[i].active=0;
+                        		drawExplosion(bot->x,bot->y , 3);
+					tft.fillCircle(bot->x, bot->y, 40, TFT_BLACK); 
+                        		bot->lives = (bot->lives)-1;
 
-						// if bot dies
-                        if((bot -> lives) == 0){
-							bot -> is_active = false;
-							bot -> x = 0;
-							bot -> y = 0;
-							// erase old score
-							tft.setTextColor(TFT_WHITE, TFT_BLACK);
-							tft.fillRect(200, 30, WIDTH - 200, 15, TFT_BLACK);
-							// update score
-							player -> score += 100;
-			            	tft.setCursor(200, 30);
-            				tft.print(player->score);
-							// update high score if needed
-							if(player->score > high_score) {
-								tft.setCursor(10, 30);
-								tft.print(player->score);
-							}
-                        }
-                	}
-                }
-                else {
-					// if bullet was fired from alien
-                    ammo[i].y += BULLET_HEIGHT;
-                    if((((player->x)+15) >= ammo[i].x) && (((player->x)-15) <= ammo[i].x)  && (((player->y)+15) >= ammo[i].y) && (((player->y)-15) <= ammo[i].y) && player->is_active ){
-                        // if bullet hits player
-						ammo[i].active=0;
-						// smaller radius for explosion because the floor gets removed at 40
-                        drawExplosion(player->x,player->y , 3);
+					// if bot dies
+                        		if((bot -> lives) == 0){
+						bot -> is_active = false;
+						bot -> x = 0;
+						bot -> y = 0;
+						// erase old score
+						tft.setTextColor(TFT_WHITE, TFT_BLACK);
+						tft.fillRect(200, 30, WIDTH - 200, 15, TFT_BLACK);
+						// update score
+						player -> score += 100;
+			            		tft.setCursor(200, 30);
+            					tft.print(player->score);
+						// update high score if needed
+						if(player->score > high_score) {
+							tft.setCursor(10, 30);
+							tft.print(player->score);
+						}
+                        		}
+                		}
+                	} else {
+				// if bullet was fired from alien
+                    		ammo[i].y += BULLET_HEIGHT;
+                    		if((((player->x)+15) >= ammo[i].x) && (((player->x)-15) <= ammo[i].x)  && (((player->y)+15) >= ammo[i].y) && (((player->y)-15) <= ammo[i].y) && player->is_active ){
+                        		// if bullet hits player
+					ammo[i].active=0;
+					// smaller radius for explosion because the floor gets removed at 40
+                        		drawExplosion(player->x,player->y , 3);
+					tft.fillCircle(player->x, player->y, 30, TFT_BLACK);
+                        		player->lives = (player->lives)-1;
+					// erase heart at bottom of screen
+					tft.fillRect(10+(player->lives)*30, HEIGHT-20, 18, 18, TFT_BLACK);
+
+					// if player dies
+                        		if((player -> lives) == 0){\
+						drawExplosion(player->x,player->y , 3);
 						tft.fillCircle(player->x, player->y, 30, TFT_BLACK);
-                        player->lives = (player->lives)-1;
-						// erase heart at bottom of screen
-						tft.fillRect(10+(player->lives)*30, HEIGHT-20, 18, 18, TFT_BLACK);
-
-						// if player dies
-                        if((player -> lives) == 0){\
-							drawExplosion(player->x,player->y , 3);
-							tft.fillCircle(player->x, player->y, 30, TFT_BLACK);
-							player -> is_active = false;
-							// exit out of game, display score and display option to return to main screen
-                        }
-                	}
-            	}
+						player -> is_active = false;
+						// exit out of game, display score and display option to return to main screen
+                        		}
+                		}
+            		}
        		}
     	}
-	}
+    }
 } 
