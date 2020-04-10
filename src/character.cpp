@@ -203,6 +203,14 @@ void fire_bullet(player_alien *ship) {
 
 
 void drawExplosion(int16_t anchorX, int16_t anchorY, int16_t scale) {
+	/* 
+	Draws explosion when alien or player is hit
+	
+	PARAMETERS:
+		anchorX: x anchor point used to draw graphic
+		anchorY: y anchor point used to draw graphic
+		scale: chosen size of graphic
+	*/
 	// set colors
 	int16_t color1 = COLOR_1_EXPLOSION;
 	int16_t color2 = COLOR_2_EXPLOSION;
@@ -341,8 +349,9 @@ void bullet_update(player_alien *bot, player_alien *player, uint32_t high_score)
 	Updates bullet positions for bots and players.
 
 	PARAMETERS:
-		bot: The alien in play
-		player: The player
+		bot: The alien object
+		player: The player object
+		high_score: The current high score
     */
 
     // iterate through each bullet
